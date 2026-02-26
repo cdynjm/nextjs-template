@@ -13,9 +13,7 @@ import {
 } from "@/components/ui/sidebar";
 
 import { usePathname } from "next/navigation";
-import Link from "next/link";
 import { LayoutDashboard, Users2, Building2, Zap, Gift } from "lucide-react";
-import clsx from "clsx";
 import { AppHeader } from "./app-header";
 import { NProgressLink } from "./ui/nprogress-link";
 
