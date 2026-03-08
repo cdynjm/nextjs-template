@@ -49,12 +49,11 @@ jobs:
           switches: >-
             -avzr --delete
             --include="/.next/***"
-            --include="/node-modules/***"
             --include="/public/***"
             --include="/app.js"
             --include="/package.json"
             --include="/package-lock.json"
-            --include="/proxy.ts"
+            --include="/proxy.ts" 
             --exclude="*"
           path: "./"
           remote_path: ${{ secrets.TARGET }}
