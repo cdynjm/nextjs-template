@@ -61,3 +61,7 @@ jobs:
           remote_user: ${{ secrets.USERNAME }}
           remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
           remote_port: 22
+          script: |
+            cd ${{ secrets.TARGET }}
+            mkdir -p tmp
+            touch tmp/restart.txt

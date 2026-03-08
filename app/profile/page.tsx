@@ -15,7 +15,7 @@ export default function ProfilePage() {
         <AppSidebar />
         <div className="flex flex-col w-full min-h-screen">
           <Navbar title="Profile" />
-          <main className="p-6 flex-1">{user?.email}</main>
+          <main className="p-6 flex-1">hello {user?.email}</main>
         </div>
       </SidebarProvider>
     </SessionGuard>

@@ -1,6 +1,5 @@
 "use client";
 
-import { useSession } from "next-auth/react";
 import SessionGuard from "@/components/auth/session-guard";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
