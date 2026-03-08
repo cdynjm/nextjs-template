@@ -19,7 +19,10 @@ app.get("/api/users", async (c) => {
         )
     }
 
-    const data = await db.select().from(users)
+    const data = await db.select({
+        email: users.email,
+        createdAt: users.createdAt
+    }).from(users)
 
     return c.json(data)
 })

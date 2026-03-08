@@ -54,7 +54,6 @@ export const authOptions: AuthOptions = {
 
       if (user) {
 
-        // ⭐ Generate Access Token
         const accessToken = jwt.sign(
           {
             id: user.id,
@@ -62,7 +61,7 @@ export const authOptions: AuthOptions = {
           },
           process.env.NEXTAUTH_SECRET!,
           {
-            expiresIn: "15m" // 🔥 Short lived security token
+            expiresIn: "2h"
           }
         )
 

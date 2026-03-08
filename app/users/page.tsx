@@ -1,11 +1,11 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import SessionGuard from "@/components/auth/session-guard";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Navbar } from "@/components/navbar";
+import { useQuery } from "@tanstack/react-query";
 import { User } from "@/types";
 
 import {
@@ -19,79 +19,63 @@ import {
 
 export default function UsersPage() {
   const { data: session, status } = useSession();
-  const router = useRouter();
 
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
-  
-  useEffect(() => {
-    if (status === "loading") return;
+  const { data: users = [], isLoading } = useQuery({
+    queryKey: ["users"],
+    queryFn: async () => {
+      const res = await fetch("/api/users", {
+        headers: {
+          Authorization: `Bearer ${session?.accessToken || ""}`,
+        },
+      });
 
-    if (!session) {
-      router.push("/login");
-      return;
-    }
+      if (!res.ok) throw new Error("Failed to fetch users");
 
-    async function fetchData() {
-      try {
-        const res = await fetch("/api/users", {
-          headers: {
-            Authorization: `Bearer ${session?.accessToken || ""}`,
-          },
-        });
+      return res.json();
+    },
+  });
 
-        if (!res.ok) throw new Error("Fetch failed");
-
-        const data = await res.json();
-
-        setUsers(data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchData();
-  }, [session, status, router]);
+  if (status === "loading") return null;
 
   return (
-    <SidebarProvider>
-      <AppSidebar />
+    <SessionGuard>
+      <SidebarProvider>
+        <AppSidebar />
 
-      <div className="flex flex-col w-full min-h-screen">
-        <Navbar title="Users" />
+        <div className="flex flex-col w-full min-h-screen">
+          <Navbar title="Users" />
 
-        <main className="p-6 flex-1">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Created</TableHead>
-              </TableRow>
-            </TableHeader>
-
-            <TableBody>
-              {loading && (
+          <main className="p-6 flex-1">
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={3}>Loading...</TableCell>
+                  <TableHead>#</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Created</TableHead>
                 </TableRow>
-              )}
+              </TableHeader>
 
-              {users.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell>{user.id}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>
-                    {new Date(user.createdAt).toLocaleDateString()}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </main>
-      </div>
-    </SidebarProvider>
+              <TableBody>
+                {isLoading && (
+                  <TableRow>
+                    <TableCell colSpan={3}>Loading...</TableCell>
+                  </TableRow>
+                )}
+
+                {users.map((user: User, index: number) => (
+                  <TableRow key={index}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>
+                      {new Date(user.createdAt).toLocaleDateString()}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </main>
+        </div>
+      </SidebarProvider>
+    </SessionGuard>
   );
 }
