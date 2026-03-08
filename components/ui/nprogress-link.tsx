@@ -1,14 +1,17 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
-import Link from "next/link";
+import Link, { LinkProps } from "next/link";
 import NProgress from "nprogress";
 
 type Props = {
-  href: string;
+  href: LinkProps["href"];
   children: React.ReactNode;
   className?: string;
 };
+export function route(path: string) {
+  return path.startsWith("/") ? path : `/${path}`;
+}
 
 export function NProgressLink({
   href,
@@ -22,13 +25,13 @@ export function NProgressLink({
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
 
-    if (pathname === href) {
+    if (typeof href === "string" && pathname === href) {
       NProgress.done();
       return;
     }
 
     NProgress.start();
-    router.push(href);
+    router.push(typeof href === "string" ? href : href.pathname || "/");
   };
 
   return (

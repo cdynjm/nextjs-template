@@ -15,7 +15,7 @@ import {
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Users2, Building2, Zap, Gift } from "lucide-react";
 import { AppHeader } from "./app-header";
-import { NProgressLink } from "./ui/nprogress-link";
+import { NProgressLink, route } from "./ui/nprogress-link";
 
 const menus = [
   {
@@ -66,7 +66,7 @@ export function AppSidebar() {
                 return (
                   <SidebarMenuItem key={item.name} className={isActive ? "bg-muted text-black rounded-sm" : ""}>
                     <SidebarMenuButton asChild>
-                      <NProgressLink href={item.path} className={`flex items-center gap-2 ${isActive ? "font-semibold hover:text-black hover:bg-transparent" : "hover:text-inherit"}`}>
+                      <NProgressLink href={route(item.path)} className={`flex items-center gap-2 ${isActive ? "font-semibold hover:text-black hover:bg-transparent" : "hover:text-inherit"}`}>
                         <item.icon />
                         <span>{item.name}</span>
                       </NProgressLink>

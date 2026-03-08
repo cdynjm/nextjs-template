@@ -10,6 +10,7 @@ import {
 import { useSession, signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { NProgressLink, route } from "./ui/nprogress-link";
 
 export function UserDropdown() {
   const { data: session } = useSession();
@@ -29,7 +30,9 @@ export function UserDropdown() {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end">
-        <DropdownMenuItem>Profile</DropdownMenuItem>
+        <DropdownMenuItem>
+          <NProgressLink href={route("/profile")}>Profile</NProgressLink>
+        </DropdownMenuItem>
 
         <DropdownMenuItem
           onClick={() =>

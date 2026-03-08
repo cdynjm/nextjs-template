@@ -28,8 +28,9 @@ const routeGuards: RouteGuard[] = [
     {
         matcher: (path) =>
             path.startsWith("/dashboard") ||
-            path.startsWith("/users"),
-
+            path.startsWith("/users") ||
+            path.startsWith("/profile")
+            ,
         authRequired: true,
         redirectIfUnauth: "/login"
     }
@@ -74,6 +75,7 @@ export const config = {
         "/",
         "/login",
         "/dashboard/:path*",
-        "/users/:path*"
+        "/users/:path*",
+        "/profile/:path*"
     ]
 }
