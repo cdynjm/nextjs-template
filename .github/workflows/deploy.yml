@@ -46,14 +46,14 @@ jobs:
       - name: 📂 Upload selected files via rsync
         uses: Burnett01/rsync-deployments@5.2
         with:
-          switches: -avzr --delete \
-            --include=".next/***" \
-            --include="node_modules/***" \
-            --include="public/***" \
-            --include="app.js" \
-            --include="package.json" \
-            --include="package-lock.json" \
-            --include="proxy.ts" \
+          switches: >-
+            -avzr --delete
+            --include="/.next/***"
+            --include="/public/***"
+            --include="/app.js"
+            --include="/package.json"
+            --include="/package-lock.json"
+            --include="/proxy.ts"
             --exclude="*"
           path: "./"
           remote_path: ${{ secrets.TARGET }}
