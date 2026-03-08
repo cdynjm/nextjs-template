@@ -4,7 +4,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
-
+import { useAuth } from "@/hooks/use-auth";
 interface DecodedToken {
   exp: number;
 }
@@ -15,6 +15,7 @@ export default function SessionGuard({
   children: React.ReactNode;
 }) {
   const { data: session, status } = useSession();
+  const { user } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -24,10 +25,10 @@ export default function SessionGuard({
       return;
     }
 
-    if (session?.accessToken) {
+    if (user?.accessToken) {
       try {
 
-        const decoded = jwtDecode<DecodedToken>(session.accessToken);
+        const decoded = jwtDecode<DecodedToken>(user?.accessToken);
 
         const isExpired = decoded.exp * 1000 < Date.now();
 
@@ -40,7 +41,7 @@ export default function SessionGuard({
       }
     }
 
-  }, [session, status, router]);
+  }, [session, user, status, router]);
 
   return <>{children}</>;
 }

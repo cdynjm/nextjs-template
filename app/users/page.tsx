@@ -7,6 +7,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { Navbar } from "@/components/navbar";
 import { useQuery } from "@tanstack/react-query";
 import { User } from "@/types";
+import { useAuth } from "@/hooks/use-auth";
 
 import {
   Table,
@@ -18,14 +19,14 @@ import {
 } from "@/components/ui/table";
 
 export default function UsersPage() {
-  const { data: session, status } = useSession();
+  const { user } = useAuth();
 
   const { data: users = [], isLoading } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
       const res = await fetch("/api/users", {
         headers: {
-          Authorization: `Bearer ${session?.accessToken || ""}`,
+          Authorization: `Bearer ${user?.accessToken || ""}`,
         },
       });
 
@@ -35,7 +36,7 @@ export default function UsersPage() {
     },
   });
 
-  if (status === "loading") return null;
+  if (user?.status === "loading") return null;
 
   return (
     <SessionGuard>
