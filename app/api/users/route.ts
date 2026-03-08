@@ -1,12 +1,12 @@
 import { Hono } from "hono";
 import { handle } from "hono/vercel";
-import { authMiddleware } from "@/lib/auth/middleware";
+import { middleware } from "@/lib/auth/middleware";
 
-import { UsersController } from "@/lib/controllers/UsersController";
+import { UsersController } from "@/lib/controllers/users-controller";
 
 const app = new Hono();
 
-app.get("/api/users", authMiddleware, async (c) => {
+app.get("/api/users", middleware, async (c) => {
   const data = await UsersController.getUsers();
   return c.json(data);
 });

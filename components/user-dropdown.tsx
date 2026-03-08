@@ -34,8 +34,7 @@ export function UserDropdown() {
         <DropdownMenuItem
           onClick={() =>
             signOut({
-              callbackUrl: "/login",
-              redirect: true,
+              callbackUrl: "/",
             })
           }
         >

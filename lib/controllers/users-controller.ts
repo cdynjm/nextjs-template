@@ -1,4 +1,4 @@
-import { encrypt, generateKey } from "@/lib/crypto/cipher";
+import { encrypt, generateKey } from "@/lib/security/cipher";
 import { users } from "../db/models";
 import { db } from "@/lib/db/connection";
 
