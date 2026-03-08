@@ -1,30 +1,14 @@
-import { Hono } from "hono"
-import { db } from "@/lib/db/connection"
-import { users } from "@/lib/db/models"
-import { handle } from "hono/vercel"
-import { verifyToken } from "@/lib/auth/verify"
+import { Hono } from "hono";
+import { handle } from "hono/vercel";
+import { authMiddleware } from "@/lib/auth/middleware";
 
-const app = new Hono()
+import { UsersController } from "@/lib/controllers/UsersController";
 
-app.get("/api/users", async (c) => {
+const app = new Hono();
 
-    const authHeader = c.req.header("authorization")
+app.get("/api/users", authMiddleware, async (c) => {
+  const data = await UsersController.getUsers();
+  return c.json(data);
+});
 
-    const user = verifyToken(authHeader)
-
-    if (!user) {
-        return c.json(
-            { error: "Unauthorized" },
-            401
-        )
-    }
-
-    const data = await db.select({
-        email: users.email,
-        createdAt: users.createdAt
-    }).from(users)
-
-    return c.json(data)
-})
-
-export const GET = handle(app)
+export const GET = handle(app);

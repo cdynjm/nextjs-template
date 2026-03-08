@@ -3,44 +3,65 @@ import { getToken } from "next-auth/jwt"
 import { NextRequest } from "next/server"
 import { JWT } from "next-auth/jwt"
 
-export async function middleware(req: NextRequest): Promise<NextResponse> {
+type RouteGuard = {
+    matcher: (path: string) => boolean
+    authRequired: boolean
+    redirectIfAuth?: string
+    redirectIfUnauth?: string
+}
+
+const routeGuards: RouteGuard[] = [
+    {
+        matcher: (path) => path === "/",
+        authRequired: false,
+        redirectIfAuth: "/dashboard",
+        redirectIfUnauth: "/login"
+    },
+
+    {
+        matcher: (path) => path === "/login",
+        authRequired: false,
+        redirectIfAuth: "/dashboard"
+    },
+
+    // Protected routes
+    {
+        matcher: (path) =>
+            path.startsWith("/dashboard") ||
+            path.startsWith("/users"),
+
+        authRequired: true,
+        redirectIfUnauth: "/login"
+    }
+]
+
+export async function middleware(req: NextRequest) {
+    const pathname = req.nextUrl.pathname
 
     const token = await getToken({
         req,
         secret: process.env.NEXTAUTH_SECRET
     }) as JWT | null
 
-    const pathname = req.nextUrl.pathname
+    for (const guard of routeGuards) {
+        
+        if (!guard.matcher(pathname)) continue
 
-    if (pathname === "/") {
-
-        if (token) {
+        if (guard.authRequired && !token) {
             return NextResponse.redirect(
-                new URL("/dashboard", req.url)
+                new URL(guard.redirectIfUnauth!, req.url)
             )
         }
 
-        return NextResponse.redirect(
-            new URL("/login", req.url)
-        )
-    }
-
-    if (pathname === "/login") {
-
-        if (token) {
+        if (!guard.authRequired && token && guard.redirectIfAuth) {
             return NextResponse.redirect(
-                new URL("/dashboard", req.url)
+                new URL(guard.redirectIfAuth, req.url)
             )
         }
 
-        return NextResponse.next()
-    }
-
-    if (pathname.startsWith("/dashboard")) {
-
-        if (!token) {
+        if (!guard.authRequired && !token && guard.redirectIfUnauth) {
             return NextResponse.redirect(
-                new URL("/login", req.url)
+                new URL(guard.redirectIfUnauth, req.url)
             )
         }
     }
@@ -49,5 +70,10 @@ export async function middleware(req: NextRequest): Promise<NextResponse> {
 }
 
 export const config = {
-    matcher: ["/", "/login", "/dashboard/:path*"]
+    matcher: [
+        "/",
+        "/login",
+        "/dashboard/:path*",
+        "/users/:path*"
+    ]
 }
