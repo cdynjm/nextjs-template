@@ -11,6 +11,7 @@ import { useSession, signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { NProgressLink, route } from "./ui/nprogress-link";
+import { LogOutIcon, User2Icon } from "lucide-react";
 
 export function UserDropdown() {
   const { data: session } = useSession();
@@ -31,7 +32,13 @@ export function UserDropdown() {
 
       <DropdownMenuContent align="end">
         <DropdownMenuItem>
-          <NProgressLink href={route("/profile")}>Profile</NProgressLink>
+          <NProgressLink
+            href={route("/profile")}
+            className="flex items-center gap-2"
+          >
+            <User2Icon />
+            Profile
+          </NProgressLink>
         </DropdownMenuItem>
 
         <DropdownMenuItem
@@ -41,7 +48,10 @@ export function UserDropdown() {
             })
           }
         >
-          Logout
+          <span className="flex items-center gap-2">
+            <LogOutIcon />
+            Logout
+          </span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
