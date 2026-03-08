@@ -49,6 +49,7 @@ jobs:
           switches: >-
             -avzr --delete
             --include="/.next/***"
+            --include="/node-modules/***"
             --include="/public/***"
             --include="/app.js"
             --include="/package.json"
