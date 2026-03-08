@@ -5,6 +5,7 @@ import { compare } from "bcryptjs"
 import { eq } from "drizzle-orm"
 import { AuthOptions } from "next-auth"
 import jwt from "jsonwebtoken"
+import { encrypt, generateKey } from "../security/cipher"
 
 export const authOptions: AuthOptions = {
 
@@ -64,8 +65,8 @@ export const authOptions: AuthOptions = {
             expiresIn: "2h"
           }
         )
-
-        token.id = user.id
+        const key = await generateKey();
+        token.encrypted_id = await encrypt(user.id, key);
         token.email = user.email
         token.accessToken = accessToken
       }
@@ -76,7 +77,7 @@ export const authOptions: AuthOptions = {
     async session({ session, token }) {
 
       if (session.user) {
-        session.user.id = token.id as string
+        session.user.encrypted_id = token.encrypted_id as string
         session.user.email = token.email as string
         session.user.accessToken = token.accessToken as string
       }

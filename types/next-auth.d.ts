@@ -5,6 +5,7 @@ declare module "next-auth" {
 
         user: {
             id: string
+            encrypted_id: string;
             accessToken?: string
             status: string
             email?: string | null
