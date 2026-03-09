@@ -1,95 +1,83 @@
-import CredentialsProvider from "next-auth/providers/credentials"
-import { db } from "../db/connection"
-import { users } from "../db/models"
-import { compare } from "bcryptjs"
-import { eq } from "drizzle-orm"
-import { AuthOptions } from "next-auth"
-import jwt from "jsonwebtoken"
-import { encrypt, generateKey } from "../security/cipher"
+import CredentialsProvider from "next-auth/providers/credentials";
+import { compare } from "bcryptjs";
+import { AuthOptions } from "next-auth";
+import jwt from "jsonwebtoken";
+import { encrypt, generateKey } from "../security/cipher";
+import { prisma } from "@/lib/db/prisma";
 
 export const authOptions: AuthOptions = {
-
   providers: [
     CredentialsProvider({
       name: "credentials",
 
       credentials: {
         email: {},
-        password: {}
+        password: {},
       },
 
       async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) return null;
 
-        if (!credentials?.email || !credentials?.password) return null
+        const user = await prisma.user.findFirst({
+          where: {
+            email: credentials.email.trim(),
+          },
+        });
 
-        const user = await db
-          .select()
-          .from(users)
-          .where(eq(users.email, credentials.email.trim()))
-          .limit(1)
+        if (!user) return null;
 
-        if (!user.length) return null
+        const valid = await compare(credentials.password, user.password);
 
-        const valid = await compare(
-          credentials.password,
-          user[0].password
-        )
-
-        if (!valid) return null
+        if (!valid) return null;
 
         return {
-          id: user[0].id.toString(),
-          email: user[0].email
-        }
-      }
-    })
+          id: user.id.toString(),
+          email: user.email,
+        };
+      },
+    }),
   ],
 
   session: {
-    strategy: "jwt"
+    strategy: "jwt",
   },
 
   callbacks: {
-
     async jwt({ token, user }) {
-
       if (user) {
-
         const accessToken = jwt.sign(
           {
             id: user.id,
-            email: user.email
+            email: user.email,
           },
           process.env.NEXTAUTH_SECRET!,
           {
-            expiresIn: "2h"
-          }
-        )
+            expiresIn: "2h",
+          },
+        );
         const key = await generateKey();
         token.encrypted_id = await encrypt(user.id, key);
-        token.email = user.email
-        token.accessToken = accessToken
+        token.email = user.email;
+        token.accessToken = accessToken;
       }
 
-      return token
+      return token;
     },
 
     async session({ session, token }) {
-
       if (session.user) {
-        session.user.encrypted_id = token.encrypted_id as string
-        session.user.email = token.email as string
-        session.user.accessToken = token.accessToken as string
+        session.user.encrypted_id = token.encrypted_id as string;
+        session.user.email = token.email as string;
+        session.user.accessToken = token.accessToken as string;
       }
 
-      return session
-    }
-
+      return session;
+    },
   },
 
   pages: {
-    signIn: "/login"
+    signIn: "/login",
   },
 
-  secret: process.env.NEXTAUTH_SECRET
-}
+  secret: process.env.NEXTAUTH_SECRET,
+};
