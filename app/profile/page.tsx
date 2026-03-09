@@ -13,6 +13,8 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
 import { ApiResponse } from "@/types";
+import { SkeletonDelay } from "@/components/ui/skeleton-delay";
+import { SkeletonCard } from "@/components/skeleton-card";
 
 import {
   Card,
@@ -43,7 +45,7 @@ export default function ProfilePage() {
   const updateProfile = (data: ProfileForm) => {
     updateMutation.mutate(data);
   };
-  
+
   const updateMutation = useMutation({
     mutationFn: async (data: ProfileForm): Promise<ApiResponse> => {
       const res = await fetch("/api/profile", {
@@ -92,43 +94,52 @@ export default function ProfilePage() {
           <Navbar title="Profile" />
 
           <main className="p-6 flex justify-center items-start">
-            <Card className="w-full max-w-sm">
-              <CardHeader>
-                <CardTitle>Update Your Profile</CardTitle>
-                <CardDescription>Change your email or password</CardDescription>
-              </CardHeader>
+            <SkeletonDelay skeleton={<SkeletonCard />}>
+              <Card className="w-full max-w-sm">
+                <CardHeader>
+                  <CardTitle>Update Your Profile</CardTitle>
+                  <CardDescription>
+                    Change your email or password
+                  </CardDescription>
+                </CardHeader>
 
-              <CardContent>
-                <form onSubmit={handleSubmit(updateProfile)} className="space-y-5">
-                  <div className="grid gap-2">
-                    <Label>Email</Label>
-                    <Input
-                      type="email"
-                      placeholder="m@example.com"
-                      {...register("email", { required: true })}
-                    />
-                  </div>
-
-                  <div className="grid gap-2">
-                    <Label>Password</Label>
-                    <Input
-                      type="password"
-                      className="pr-10"
-                      placeholder="Enter new password"
-                      {...register("password")}
-                    />
-                  </div>
-
-                  <Button
-                    className="w-full"
-                    type="submit"
-                    disabled={updateMutation.isPending}
+                <CardContent>
+                  <form
+                    onSubmit={handleSubmit(updateProfile)}
+                    className="space-y-5"
                   >
-                    {updateMutation.isPending ? "Updating..." : "Update Profile"}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
+                    <div className="grid gap-2">
+                      <Label>Email</Label>
+                      <Input
+                        type="email"
+                        placeholder="m@example.com"
+                        {...register("email", { required: true })}
+                      />
+                    </div>
+
+                    <div className="grid gap-2">
+                      <Label>Password</Label>
+                      <Input
+                        type="password"
+                        className="pr-10"
+                        placeholder="Enter new password"
+                        {...register("password")}
+                      />
+                    </div>
+
+                    <Button
+                      className="w-full"
+                      type="submit"
+                      disabled={updateMutation.isPending}
+                    >
+                      {updateMutation.isPending
+                        ? "Updating..."
+                        : "Update Profile"}
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            </SkeletonDelay>
           </main>
         </div>
       </SidebarProvider>

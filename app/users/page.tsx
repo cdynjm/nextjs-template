@@ -7,6 +7,9 @@ import { Navbar } from "@/components/navbar";
 import { useQuery } from "@tanstack/react-query";
 import { User } from "@/types";
 import { useAuth } from "@/hooks/use-auth";
+import { SkeletonDelay } from "@/components/ui/skeleton-delay";
+import { SkeletonCard } from "@/components/skeleton-card";
+import FormattedDate from "@/components/formatted-date";
 
 import {
   Table,
@@ -35,8 +38,6 @@ export default function UsersPage() {
     },
   });
 
-  if (user?.status === "loading") return null;
-
   return (
     <SessionGuard>
       <SidebarProvider>
@@ -44,35 +45,36 @@ export default function UsersPage() {
 
         <div className="flex flex-col w-full min-h-screen">
           <Navbar title="Users" />
-
           <main className="p-6 flex-1">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>#</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Created</TableHead>
-                </TableRow>
-              </TableHeader>
-
-              <TableBody>
-                {isLoading && (
+            <SkeletonDelay skeleton={<SkeletonCard />}>
+              <Table>
+                <TableHeader>
                   <TableRow>
-                    <TableCell colSpan={3}>Loading...</TableCell>
+                    <TableHead>#</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Created</TableHead>
                   </TableRow>
-                )}
+                </TableHeader>
 
-                {users.map((user: User, index: number) => (
-                  <TableRow key={index}>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>
-                      {new Date(user.createdAt).toLocaleDateString()}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                <TableBody>
+                  {isLoading && (
+                    <TableRow>
+                      <TableCell colSpan={3}>Loading...</TableCell>
+                    </TableRow>
+                  )}
+
+                  {users.map((user: User, index: number) => (
+                    <TableRow key={index}>
+                      <TableCell>{index + 1}</TableCell>
+                      <TableCell>{user.email}</TableCell>
+                      <TableCell>
+                        <FormattedDate date={user.createdAt} />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </SkeletonDelay>
           </main>
         </div>
       </SidebarProvider>
