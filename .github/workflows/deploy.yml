@@ -58,7 +58,6 @@ jobs:
             --include="/package-lock.json"
             --include="/proxy.ts" 
             --include="/prisma/***"
-            --include="/generated/prisma/***"
             --exclude="*"
           path: "./"
           remote_path: ${{ secrets.TARGET }}
