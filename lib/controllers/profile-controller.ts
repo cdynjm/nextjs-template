@@ -1,15 +1,9 @@
 import { prisma } from "@/lib/db/prisma";
 import { decrypt, generateKey } from "@/lib/security/cipher";
-
-interface UpdateProfileData {
-  encrypted_id?: string;
-  email?: string;
-  password?: string;
-}
-
+import bcrypt from "bcryptjs";
+import { User } from "@/types";
 export class ProfileController {
-  static async updateProfile(data: UpdateProfileData) {
-
+  static async updateProfile(data: User) {
     if (!data.encrypted_id) {
       throw new Error("encrypted_id is required");
     }
@@ -20,18 +14,20 @@ export class ProfileController {
 
     const updateData: { email?: string; password?: string } = {};
 
-    if (data.email) updateData.email = data.email.trim();
-    
+    if (data.email) 
+      updateData.email = data.email.trim();
+
+    if (data.password && data.password.trim() !== "")
+      updateData.password = await bcrypt.hash(data.password.trim(), 10);
 
     if (Object.keys(updateData).length === 0) {
       throw new Error("No valid data to update");
     }
 
-    await prisma.user.update({
+    return await prisma.user.update({
       where: { id: userId },
       data: updateData,
       select: {
-        id: true,
         email: true,
         created_at: true,
       },

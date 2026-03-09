@@ -29,7 +29,7 @@ interface ProfileForm {
 }
 
 export default function ProfilePage() {
-  const { user } = useAuth();
+  const { user, updateSession } = useAuth();
 
   const { register, handleSubmit, setValue } = useForm<ProfileForm>();
 
@@ -40,7 +40,11 @@ export default function ProfilePage() {
     }
   }, [user, setValue]);
 
-  const mutation = useMutation({
+  const updateProfile = (data: ProfileForm) => {
+    updateMutation.mutate(data);
+  };
+  
+  const updateMutation = useMutation({
     mutationFn: async (data: ProfileForm): Promise<ApiResponse> => {
       const res = await fetch("/api/profile", {
         method: "PATCH",
@@ -60,8 +64,14 @@ export default function ProfilePage() {
       return resData;
     },
 
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast.success("Profile updated successfully!");
+
+      updateSession({
+        user: {
+          ...data.user,
+        },
+      });
     },
 
     onError: (error) => {
@@ -72,10 +82,6 @@ export default function ProfilePage() {
       }
     },
   });
-
-  const onSubmit = (data: ProfileForm) => {
-    mutation.mutate(data);
-  };
 
   return (
     <SessionGuard>
@@ -89,16 +95,11 @@ export default function ProfilePage() {
             <Card className="w-full max-w-sm">
               <CardHeader>
                 <CardTitle>Update Your Profile</CardTitle>
-                <CardDescription>
-                  Change your email or password
-                </CardDescription>
+                <CardDescription>Change your email or password</CardDescription>
               </CardHeader>
 
               <CardContent>
-                <form
-                  onSubmit={handleSubmit(onSubmit)}
-                  className="space-y-5"
-                >
+                <form onSubmit={handleSubmit(updateProfile)} className="space-y-5">
                   <div className="grid gap-2">
                     <Label>Email</Label>
                     <Input
@@ -121,9 +122,9 @@ export default function ProfilePage() {
                   <Button
                     className="w-full"
                     type="submit"
-                    disabled={mutation.isPending}
+                    disabled={updateMutation.isPending}
                   >
-                    {mutation.isPending ? "Updating..." : "Update Profile"}
+                    {updateMutation.isPending ? "Updating..." : "Update Profile"}
                   </Button>
                 </form>
               </CardContent>

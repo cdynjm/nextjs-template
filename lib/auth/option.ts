@@ -43,7 +43,8 @@ export const authOptions: AuthOptions = {
   },
 
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
+      
       if (user) {
         const accessToken = jwt.sign(
           {
@@ -52,13 +53,19 @@ export const authOptions: AuthOptions = {
           },
           process.env.NEXTAUTH_SECRET!,
           {
-            expiresIn: "2h",
+            expiresIn: "12h",
           },
         );
+
         const key = await generateKey();
+
         token.encrypted_id = await encrypt(user.id, key);
         token.email = user.email;
         token.accessToken = accessToken;
+      }
+
+      if (trigger === "update" && session?.user) {
+        token.email = session.user.email;
       }
 
       return token;
