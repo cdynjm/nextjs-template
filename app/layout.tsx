@@ -4,6 +4,7 @@ import "./globals.css";
 import { Providers } from "@/components/providers/session-provider";
 import { NProgressProvider } from "@/components/providers/nprogress-provider";
 import QueryProvider from "@/components/providers/query-provider";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,6 +34,7 @@ export default function RootLayout({
         <Providers>
           <QueryProvider>
             <NProgressProvider />
+            <Toaster position="top-right" />
             {children}
           </QueryProvider>
         </Providers>
