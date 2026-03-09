@@ -24,6 +24,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
+
 interface ProfileForm {
   encrypted_id: string;
   email: string;
@@ -32,7 +35,7 @@ interface ProfileForm {
 
 export default function ProfilePage() {
   const { user, updateSession } = useAuth();
-
+  const [showPassword, setShowPassword] = useState(false);
   const { register, handleSubmit, setValue } = useForm<ProfileForm>();
 
   useEffect(() => {
@@ -118,13 +121,25 @@ export default function ProfilePage() {
                     </div>
 
                     <div className="grid gap-2">
-                      <Label>Password</Label>
-                      <Input
-                        type="password"
-                        className="pr-10"
-                        placeholder="Enter new password"
-                        {...register("password")}
-                      />
+                      <div className="relative">
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          className="pr-10"
+                          {...register("password", { required: false })}
+                        />
+
+                        <Button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-0 top-1/2 -translate-y-1/2 bg-transparent text-dark hover:bg-transparent"
+                        >
+                          {showPassword ? (
+                            <EyeOff size={18} />
+                          ) : (
+                            <Eye size={18} />
+                          )}
+                        </Button>
+                      </div>
                     </div>
 
                     <Button
