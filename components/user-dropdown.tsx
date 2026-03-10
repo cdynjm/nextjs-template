@@ -27,7 +27,7 @@ export function UserDropdown() {
             </AvatarFallback>
           </Avatar>
 
-          <span className="text-sm">{user?.name}</span>
+          <span className="text-sm hidden md:block">{user?.name}</span>
         </Button>
       </DropdownMenuTrigger>
 

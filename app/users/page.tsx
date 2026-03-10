@@ -72,7 +72,7 @@ export default function UsersPage() {
                         <TableCell>{user.name}</TableCell>
                         <TableCell>{user.email}</TableCell>
                         <TableCell>
-                          <FormattedDate date={user.createdAt} />
+                          <FormattedDate date={user.updated_at} variant="datetime"/>
                         </TableCell>
                       </TableRow>
                     ))}

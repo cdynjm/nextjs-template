@@ -65,14 +65,20 @@ export default function ProfilePage() {
       const resData = await res.json();
 
       if (!res.ok) {
-        throw new Error(resData.error || "Failed to update profile");
+        throw resData;
       }
 
       return resData;
     },
 
     onSuccess: (data) => {
-      toast.success("Profile updated successfully!");
+      toast("Updated", {
+        description: data.description,
+        action: {
+          label: "Close",
+          onClick: () => console.log(""),
+        },
+      });
 
       updateSession({
         user: {
@@ -82,7 +88,16 @@ export default function ProfilePage() {
     },
 
     onError: (error) => {
-      if (error instanceof Error) {
+      if (error && typeof error === "object" && "description" in error) {
+        const backendError = error as { description: string };
+        toast("Opss sorry but ...", {
+          description: backendError.description,
+          action: {
+            label: "Close",
+            onClick: () => console.log(""),
+          },
+        });
+      } else if (error instanceof Error) {
         toast.error(error.message);
       } else {
         toast.error("Something went wrong");
@@ -113,7 +128,7 @@ export default function ProfilePage() {
                     onSubmit={handleSubmit(updateProfile)}
                     className="space-y-5"
                   >
-                     <div className="grid gap-2">
+                    <div className="grid gap-2">
                       <Label>Name</Label>
                       <Input
                         type="text"
@@ -158,9 +173,7 @@ export default function ProfilePage() {
                       type="submit"
                       disabled={updateMutation.isPending}
                     >
-                      {updateMutation.isPending
-                        ? "Updating..."
-                        : "Update Profile"}
+                      {updateMutation.isPending ? "Updating..." : "Update"}
                     </Button>
                   </form>
                 </CardContent>

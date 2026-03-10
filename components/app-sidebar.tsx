@@ -15,7 +15,14 @@ import {
 } from "@/components/ui/sidebar";
 
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users2, Building2, Zap, Gift } from "lucide-react";
+import {
+  LayoutDashboard,
+  Users2,
+  Building2,
+  Zap,
+  Gift,
+  UserIcon,
+} from "lucide-react";
 import { AppHeader } from "./app-header";
 import { NProgressLink, route } from "./ui/nprogress-link";
 import {
@@ -148,36 +155,22 @@ export function AppSidebar() {
                       </AvatarFallback>
                     </Avatar>
                     <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span className="truncate font-medium">
-                        {user?.email}
-                      </span>
+                      <span className="truncate font-medium">{user?.name}</span>
                       <span className="truncate text-xs">{user?.email}</span>
                     </div>
                   </div>
                 </DropdownMenuLabel>
+
                 <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                  <DropdownMenuItem>
-                    <Sparkles />
-                    Upgrade to Pro
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                  <DropdownMenuItem>
-                    <BadgeCheck />
-                    Account
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <CreditCard />
-                    Billing
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Bell />
-                    Notifications
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <NProgressLink
+                    href={route("profile")}
+                    className="flex items-center gap-2"
+                  >
+                    <UserIcon />
+                    Profile
+                  </NProgressLink>
+                </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={() =>
                     signOut({

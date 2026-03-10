@@ -2,7 +2,7 @@
 
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { UserDropdown } from "./user-dropdown";
-
+import { AppLogo } from "./app-logo";
 interface NavbarProps {
   title?: string;
 }
@@ -13,7 +13,10 @@ export function Navbar({ title }: NavbarProps) {
       <div className="flex items-center justify-between px-6 h-14">
         <div className="flex items-center gap-3">
           <SidebarTrigger />
-          <h1 className="text-[13px] font-semibol text-gray-600">{title}</h1>
+          <div className="block md:hidden">
+            <AppLogo />
+          </div>
+          <h1 className="text-[13px] font-semibol text-gray-600 font-bold uppercase">{title}</h1>
         </div>
         <UserDropdown />
       </div>

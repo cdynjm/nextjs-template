@@ -12,7 +12,8 @@ export class UsersController {
           encrypted_id: await encrypt(user.id.toString(), key),
           name: user.name,
           email: user.email,
-          createdAt: user.created_at,
+          created_at: user.created_at,
+          updated_at: user.updated_at
         })),
       );
     } catch (error) {
