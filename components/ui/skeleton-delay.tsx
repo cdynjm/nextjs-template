@@ -1,25 +1,37 @@
-import { useEffect, useState } from 'react';
+"use client";
+
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 interface SkeletonDelayProps {
-    delay?: number;
-    skeleton: React.ReactNode;
-    children: React.ReactNode;
+  delay?: number;
+  skeleton: React.ReactNode;
+  children: React.ReactNode;
 }
 
+const visitedPaths = new Set<string>();
+
 export function SkeletonDelay({
-    delay = 1000,
-    skeleton,
-    children,
+  delay = 500,
+  skeleton,
+  children,
 }: SkeletonDelayProps) {
-    const [showSkeleton, setShowSkeleton] = useState(true);
+  const pathname = usePathname();
+  const [showSkeleton, setShowSkeleton] = useState(() => !visitedPaths.has(pathname));
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setShowSkeleton(false);
-        }, delay);
+  useEffect(() => {
+    if (!visitedPaths.has(pathname)) {
+      const timer = setTimeout(() => {
+        setShowSkeleton(false);
+        visitedPaths.add(pathname);
+      }, delay);
 
-        return () => clearTimeout(timer);
-    }, [delay]);
+      return () => clearTimeout(timer);
+    } else {
+      const timer = setTimeout(() => setShowSkeleton(false), 0);
+      return () => clearTimeout(timer);
+    }
+  }, [pathname, delay]);
 
-    return <>{showSkeleton ? skeleton : children}</>;
+  return <>{showSkeleton ? skeleton : children}</>;
 }

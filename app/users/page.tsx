@@ -8,9 +8,8 @@ import { useQuery } from "@tanstack/react-query";
 import { User } from "@/types";
 import { useAuth } from "@/hooks/use-auth";
 import { SkeletonDelay } from "@/components/ui/skeleton-delay";
-import { SkeletonCard } from "@/components/skeleton-card";
+import { SkeletonCard, SkeletonTable } from "@/components/skeleton-card";
 import FormattedDate from "@/components/formatted-date";
-
 import {
   Table,
   TableBody,
@@ -61,7 +60,9 @@ export default function UsersPage() {
                   <TableBody className="">
                     {isLoading && (
                       <TableRow>
-                        <TableCell colSpan={3}>Loading...</TableCell>
+                        <TableCell colSpan={10}>
+                          <SkeletonTable />
+                        </TableCell>
                       </TableRow>
                     )}
 
