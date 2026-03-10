@@ -5,8 +5,8 @@ export function SkeletonCard() {
   return (
     <Card className="w-full animate-pulse border bg-white flex-1 shadow-none">
       <CardHeader>
-        <Skeleton className="h-4 w-2/3" />
-        <Skeleton className="h-4 w-1/2" />
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-full" />
       </CardHeader>
       <CardContent>
         <Skeleton className="aspect-video w-full" />
@@ -18,8 +18,8 @@ export function SkeletonCard() {
 export function SkeletonTable() {
   return (
     <div>
-      <Skeleton className="h-4 w-2/3 mb-2" />
-      <Skeleton className="h-4 w-1/2 mb-2" />
+      <Skeleton className="h-4 w-full mb-2" />
+      <Skeleton className="h-4 w-full mb-2" />
     </div>
   );
 }
