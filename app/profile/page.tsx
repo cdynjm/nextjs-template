@@ -148,6 +148,7 @@ export default function ProfilePage() {
                     </div>
 
                     <div className="grid gap-2">
+                      <Label>Password</Label>
                       <div className="relative">
                         <Input
                           type={showPassword ? "text" : "password"}
