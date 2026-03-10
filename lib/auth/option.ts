@@ -32,6 +32,7 @@ export const authOptions: AuthOptions = {
 
         return {
           id: user.id.toString(),
+          name: user.name,
           email: user.email,
         };
       },
@@ -49,6 +50,7 @@ export const authOptions: AuthOptions = {
         const accessToken = jwt.sign(
           {
             id: user.id,
+            name: user.name,
             email: user.email,
           },
           process.env.NEXTAUTH_SECRET!,
@@ -61,10 +63,12 @@ export const authOptions: AuthOptions = {
 
         token.encrypted_id = await encrypt(user.id, key);
         token.email = user.email;
+        token.name = user.name;
         token.accessToken = accessToken;
       }
 
       if (trigger === "update" && session?.user) {
+        token.name = session.user.name;
         token.email = session.user.email;
       }
 
@@ -74,6 +78,7 @@ export const authOptions: AuthOptions = {
     async session({ session, token }) {
       if (session.user) {
         session.user.encrypted_id = token.encrypted_id as string;
+        session.user.name = token.name as string;
         session.user.email = token.email as string;
         session.user.accessToken = token.accessToken as string;
       }

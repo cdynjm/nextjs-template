@@ -12,10 +12,12 @@ export class ProfileController {
     const userIdString = await decrypt(data.encrypted_id, key);
     const userId = parseInt(userIdString, 10);
 
-    const updateData: { email?: string; password?: string } = {};
+    const updateData: { email?: string; name?: string; password?: string; } = {};
 
-    if (data.email) 
+    if (data.email && data.name) {
       updateData.email = data.email.trim();
+      updateData.name = data.name;
+    }
 
     if (data.password && data.password.trim() !== "")
       updateData.password = await bcrypt.hash(data.password.trim(), 10);
@@ -28,6 +30,7 @@ export class ProfileController {
       where: { id: userId },
       data: updateData,
       select: {
+        name: true,
         email: true,
         created_at: true,
       },

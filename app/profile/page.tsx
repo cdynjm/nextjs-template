@@ -29,6 +29,7 @@ import { useState } from "react";
 
 interface ProfileForm {
   encrypted_id: string;
+  name: string;
   email: string;
   password?: string;
 }
@@ -41,6 +42,7 @@ export default function ProfilePage() {
   useEffect(() => {
     if (user?.email && user?.encrypted_id) {
       setValue("encrypted_id", user.encrypted_id);
+      setValue("name", user.name);
       setValue("email", user.email);
     }
   }, [user, setValue]);
@@ -111,6 +113,15 @@ export default function ProfilePage() {
                     onSubmit={handleSubmit(updateProfile)}
                     className="space-y-5"
                   >
+                     <div className="grid gap-2">
+                      <Label>Name</Label>
+                      <Input
+                        type="text"
+                        placeholder="Name"
+                        {...register("name", { required: true })}
+                      />
+                    </div>
+
                     <div className="grid gap-2">
                       <Label>Email</Label>
                       <Input

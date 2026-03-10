@@ -10,6 +10,7 @@ export class UsersController {
       return await Promise.all(
         usersData.map(async (user) => ({
           encrypted_id: await encrypt(user.id.toString(), key),
+          name: user.name,
           email: user.email,
           createdAt: user.created_at,
         })),

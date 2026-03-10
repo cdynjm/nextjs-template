@@ -47,33 +47,37 @@ export default function UsersPage() {
           <Navbar title="Users" />
           <main className="p-6 flex-1">
             <SkeletonDelay skeleton={<SkeletonCard />}>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>#</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Created</TableHead>
-                  </TableRow>
-                </TableHeader>
-
-                <TableBody>
-                  {isLoading && (
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader className="sticky top-0 z-10 bg-muted">
                     <TableRow>
-                      <TableCell colSpan={3}>Loading...</TableCell>
+                      <TableHead>#</TableHead>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Created</TableHead>
                     </TableRow>
-                  )}
+                  </TableHeader>
 
-                  {users.map((user: User, index: number) => (
-                    <TableRow key={index}>
-                      <TableCell>{index + 1}</TableCell>
-                      <TableCell>{user.email}</TableCell>
-                      <TableCell>
-                        <FormattedDate date={user.createdAt} />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  <TableBody className="">
+                    {isLoading && (
+                      <TableRow>
+                        <TableCell colSpan={3}>Loading...</TableCell>
+                      </TableRow>
+                    )}
+
+                    {users.map((user: User, index: number) => (
+                      <TableRow key={index}>
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell>{user.name}</TableCell>
+                        <TableCell>{user.email}</TableCell>
+                        <TableCell>
+                          <FormattedDate date={user.createdAt} />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </SkeletonDelay>
           </main>
         </div>

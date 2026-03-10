@@ -7,14 +7,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { useSession, signOut } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { NProgressLink, route } from "./ui/nprogress-link";
 import { LogOutIcon, User2Icon } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 export function UserDropdown() {
-  const { data: session } = useSession();
+  const { user } = useAuth();
 
   return (
     <DropdownMenu>
@@ -22,11 +23,11 @@ export function UserDropdown() {
         <Button variant="ghost" className="flex items-center gap-2">
           <Avatar className="h-8 w-8">
             <AvatarFallback>
-              {session?.user?.email?.charAt(0).toUpperCase()}
+              {user?.name?.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
 
-          <span className="text-sm">{session?.user?.email}</span>
+          <span className="text-sm">{user?.name}</span>
         </Button>
       </DropdownMenuTrigger>
 
