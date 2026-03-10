@@ -1,9 +1,9 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
 import { AuthOptions } from "next-auth";
-import jwt from "jsonwebtoken";
-import { encrypt, generateKey } from "../security/cipher";
 import { prisma } from "@/lib/db/prisma";
+import { checkRateLimit, resetRateLimit } from "@/lib/auth/rate-limiter";
+import { authCallbacks } from "./callbacks";
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -18,17 +18,19 @@ export const authOptions: AuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        const user = await prisma.user.findFirst({
-          where: {
-            email: credentials.email.trim(),
-          },
-        });
+        const email = credentials.email.trim();
 
-        if (!user) return null;
+        if (checkRateLimit(email)) {
+          throw new Error("Too many login attempts. Try again in 5 minutes.");
+        }
+
+        const user = await prisma.user.findFirst({ where: { email } });
+        if (!user) throw new Error("Invalid email or password");
 
         const valid = await compare(credentials.password, user.password);
+        if (!valid) throw new Error("Invalid email or password");
 
-        if (!valid) return null;
+        resetRateLimit(email);
 
         return {
           id: user.id.toString(),
@@ -43,49 +45,7 @@ export const authOptions: AuthOptions = {
     strategy: "jwt",
   },
 
-  callbacks: {
-    async jwt({ token, user, trigger, session }) {
-      
-      if (user) {
-        const accessToken = jwt.sign(
-          {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-          },
-          process.env.NEXTAUTH_SECRET!,
-          {
-            expiresIn: "12h",
-          },
-        );
-
-        const key = await generateKey();
-
-        token.encrypted_id = await encrypt(user.id, key);
-        token.email = user.email;
-        token.name = user.name;
-        token.accessToken = accessToken;
-      }
-
-      if (trigger === "update" && session?.user) {
-        token.name = session.user.name;
-        token.email = session.user.email;
-      }
-
-      return token;
-    },
-
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.encrypted_id = token.encrypted_id as string;
-        session.user.name = token.name as string;
-        session.user.email = token.email as string;
-        session.user.accessToken = token.accessToken as string;
-      }
-
-      return session;
-    },
-  },
+  callbacks: authCallbacks,
 
   pages: {
     signIn: "/login",
