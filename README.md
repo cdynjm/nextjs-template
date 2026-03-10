@@ -6,6 +6,22 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ---
 
+## Tech Stack
+
+This template includes the following technologies:
+
+* **Next.js** – React framework for full-stack applications
+* **React.js** – UI library for building interactive interfaces
+* **TypeScript** – Typed superset of JavaScript for safer code
+* **Hono.js** – Lightweight backend API framework
+* **NextAuth.js** – Authentication system for Next.js
+* **TanStack Query** – Powerful data fetching, caching, and synchronization for React
+* **MySQL** – Relational database
+* **Prisma** – Type-safe ORM for database access
+* **Tailwind CSS** – Utility-first CSS framework for styling
+
+---
+
 ## Getting Started
 
 First, run the development server:
