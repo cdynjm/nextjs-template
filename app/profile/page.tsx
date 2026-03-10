@@ -26,6 +26,7 @@ import {
 
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
+import { api } from "@/lib/api/endpoints";
 
 interface ProfileForm {
   encrypted_id: string;
@@ -53,7 +54,7 @@ export default function ProfilePage() {
 
   const updateMutation = useMutation({
     mutationFn: async (data: ProfileForm): Promise<ApiResponse> => {
-      const res = await fetch("/api/profile", {
+      const res = await fetch(api.profile, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${user?.accessToken || ""}`,

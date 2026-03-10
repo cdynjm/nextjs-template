@@ -18,6 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { api } from "@/lib/api/endpoints";
 
 export default function UsersPage() {
   const { user } = useAuth();
@@ -25,7 +26,7 @@ export default function UsersPage() {
   const { data: users = [], isLoading } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
-      const res = await fetch("/api/users", {
+      const res = await fetch(api.users, {
         headers: {
           Authorization: `Bearer ${user?.accessToken || ""}`,
         },
