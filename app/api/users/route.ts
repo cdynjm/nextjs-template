@@ -51,7 +51,6 @@ app.patch("/api/users", middleware, async (c) => {
 
     return c.json({
       success: true,
-      user: updated.user,
       description: updated.toastDescription,
     });
   } catch (error) {
@@ -105,8 +104,6 @@ app.delete("/api/users", middleware, async (c) => {
     );
   }
 });
-
-
 
 export const GET = handle(app);
 export const POST = handle(app);

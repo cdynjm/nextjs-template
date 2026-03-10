@@ -93,14 +93,7 @@ export class UsersController {
 
     const updatedUser = await prisma.user.update({
       where: { id: userId },
-      data: updateData,
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        created_at: true,
-        updated_at: true,
-      },
+      data: updateData
     });
 
     return {
