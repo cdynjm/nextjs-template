@@ -56,20 +56,10 @@ const menus = [
 
 const teams = [
   {
-    name: "Acme Inc",
+    name: "NextJS",
     logo: Building2,
-    plan: "Enterprise",
-  },
-  {
-    name: "Acme Corp.",
-    logo: Zap,
-    plan: "Startup",
-  },
-  {
-    name: "Evil Corp.",
-    logo: Gift,
-    plan: "Free",
-  },
+    plan: "Project Template",
+  }
 ];
 
 export function AppSidebar() {
@@ -125,7 +115,7 @@ export function AppSidebar() {
                 >
                   <Avatar className="h-8 w-8 rounded-lg">
                     <Avatar className="h-8 w-8">
-                      <AvatarFallback>
+                      <AvatarFallback className="bg-gray-200">
                         {user?.name?.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
@@ -145,7 +135,7 @@ export function AppSidebar() {
                 <DropdownMenuLabel className="p-0 font-normal">
                   <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                     <Avatar className="h-8 w-8">
-                      <AvatarFallback>
+                      <AvatarFallback className="bg-gray-200">
                         {user?.name?.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
