@@ -3,7 +3,6 @@ import { prisma } from "@/lib/db/prisma";
 import bcrypt from "bcryptjs";
 import { User } from "@/types";
 import { ToastError } from "../errors/toast-error";
-import { useAuth } from "@/hooks/use-auth";
 export class UsersController {
   static async getUsers() {
     try {
