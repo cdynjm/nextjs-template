@@ -19,8 +19,6 @@ import {
   LayoutDashboard,
   Users2,
   Building2,
-  Zap,
-  Gift,
   UserIcon,
 } from "lucide-react";
 import { AppHeader } from "./app-header";
