@@ -54,7 +54,7 @@ export default function ProfilePage() {
 
   const updateMutation = useMutation({
     mutationFn: async (data: ProfileForm): Promise<ApiResponse> => {
-      const res = await fetch(api.profile, {
+      const res = await fetch(api.UPDATE_PROFILE, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${user?.accessToken || ""}`,
