@@ -4,15 +4,16 @@ import { middleware } from "@/lib/auth/middleware";
 import { User } from "@/types";
 import { UsersController } from "@/lib/controllers/users-controller";
 import { ToastError } from "@/lib/errors/toast-error";
+import { api } from "@/lib/api/endpoints";
 
 const app = new Hono();
 
-app.get("/api/users", middleware, async (c) => {
+app.get(api.GET_USERS, middleware, async (c) => {
   const data = await UsersController.getUsers();
   return c.json(data);
 });
 
-app.post("/api/users", middleware, async (c) => {
+app.post(api.CREATE_USER, middleware, async (c) => {
   try {
     const body = (await c.req.json()) as User;
     
@@ -32,7 +33,6 @@ app.post("/api/users", middleware, async (c) => {
         400
       );
     }
-    console.log('hey')
     return c.json(
       {
         success: false,
@@ -43,7 +43,7 @@ app.post("/api/users", middleware, async (c) => {
   }
 });
 
-app.patch("/api/users", middleware, async (c) => {
+app.patch(api.UPDATE_USER, middleware, async (c) => {
   try {
     const body = (await c.req.json()) as User;
 
@@ -63,7 +63,6 @@ app.patch("/api/users", middleware, async (c) => {
         400
       );
     }
-    
     return c.json(
       {
         success: false,
@@ -74,7 +73,7 @@ app.patch("/api/users", middleware, async (c) => {
   }
 });
 
-app.delete("/api/users", middleware, async (c) => {
+app.delete(api.DELETE_USER, middleware, async (c) => {
   try {
     const body = (await c.req.json()) as User;
 
@@ -94,7 +93,6 @@ app.delete("/api/users", middleware, async (c) => {
         400
       );
     }
-    
     return c.json(
       {
         success: false,

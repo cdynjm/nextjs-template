@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import SessionGuard from "@/components/auth/session-guard";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -35,7 +35,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { User } from "@/types";
 import { ApiResponse } from "@/types";
-import { QUERY_KEYS } from "@/lib/queries/query-keys";
+import { query_keys } from "@/lib/queries/query-keys";
 import { Eye, EyeOff, PencilIcon, TrashIcon, UsersIcon } from "lucide-react";
 interface UserForm {
   encrypted_id: string;
@@ -49,7 +49,7 @@ export default function UsersPage() {
   const queryClient = useQueryClient();
 
   const { data: users = [], isLoading } = useQuery({
-    queryKey: QUERY_KEYS.USERS,
+    queryKey: query_keys.USERS,
     queryFn: async () => {
       const res = await fetch(api.GET_USERS, {
         headers: { Authorization: `Bearer ${user?.accessToken || ""}` },
@@ -106,7 +106,7 @@ export default function UsersPage() {
         password: "",
       });
 
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.USERS });
+      queryClient.invalidateQueries({ queryKey: query_keys.USERS });
       setAddingUser(null);
     },
     onError: (error) => {
@@ -127,7 +127,7 @@ export default function UsersPage() {
     },
   });
 
-  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [editingUser, setEditingUser] = useState<boolean | null>(null);
 
   const {
     register: updateUserRegister,
@@ -137,16 +137,16 @@ export default function UsersPage() {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  useEffect(() => {
-    if (editingUser) {
-      updateUserReset({
-        encrypted_id: editingUser.encrypted_id,
-        name: editingUser.name,
-        email: editingUser.email,
-        password: "",
-      });
-    }
-  }, [editingUser, updateUserReset]);
+  const editUser = (user: User) => {
+    updateUserReset({
+      encrypted_id: user.encrypted_id,
+      name: user.name,
+      email: user.email,
+      password: "",
+    });
+
+    setEditingUser(true);
+  };
 
   const updateUser = updateUserHandleSubmit((data: UserForm) => {
     updateMutation.mutate(data);
@@ -180,8 +180,8 @@ export default function UsersPage() {
         },
       });
 
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.USERS });
-      setEditingUser(null);
+      queryClient.invalidateQueries({ queryKey: query_keys.USERS });
+      setEditingUser(false);
     },
     onError: (error) => {
       if (error && typeof error === "object" && "description" in error) {
@@ -201,18 +201,18 @@ export default function UsersPage() {
     },
   });
 
-  const [deletingUser, setDeletingUser] = useState<User | null>(null);
+  const [deletingUser, setDeletingUser] = useState<boolean | null>(null);
 
   const { handleSubmit: deleteUserHandleSubmit, reset: deleteUserReset } =
     useForm<UserForm>();
 
-  useEffect(() => {
-    if (deletingUser) {
-      deleteUserReset({
-        encrypted_id: deletingUser.encrypted_id,
-      });
-    }
-  }, [deletingUser, deleteUserReset]);
+  const removeUser = (user: User) => {
+    deleteUserReset({
+      encrypted_id: user.encrypted_id,
+    });
+
+    setDeletingUser(true);
+  };
 
   const deleteUser = deleteUserHandleSubmit((data: UserForm) => {
     deleteMutation.mutate(data);
@@ -250,9 +250,9 @@ export default function UsersPage() {
         encrypted_id: "",
       });
 
-      setDeletingUser(null);
+      setDeletingUser(false);
 
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.USERS });
+      queryClient.invalidateQueries({ queryKey: query_keys.USERS });
       setAddingUser(null);
     },
     onError: (error) => {
@@ -282,178 +282,167 @@ export default function UsersPage() {
           <Navbar title="Users" />
           <main className="p-6 flex-1">
             <SkeletonDelay skeleton={<SkeletonCard />}>
-              {addingUser && (
-                <Dialog
-                  open={!!addingUser}
-                  onOpenChange={() => setAddingUser(null)}
-                >
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Add User</DialogTitle>
-                      <DialogDescription>Fill in the details below to add a new user.</DialogDescription>
-                    </DialogHeader>
+              <Dialog
+                open={!!addingUser}
+                onOpenChange={() => setAddingUser(false)}
+              >
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Add User</DialogTitle>
+                    <DialogDescription>
+                      Fill in the details below to add a new user.
+                    </DialogDescription>
+                  </DialogHeader>
 
-                    <form className="space-y-4 py-2" onSubmit={createUser}>
-                      <div className="grid gap-2">
-                        <Label>Name</Label>
+                  <form className="space-y-4 py-2" onSubmit={createUser}>
+                    <div className="grid gap-2">
+                      <Label>Name</Label>
+                      <Input
+                        type="text"
+                        placeholder="Name"
+                        {...createUserRegister("name", { required: true })}
+                      />
+                    </div>
+
+                    <div className="grid gap-2">
+                      <Label>Email</Label>
+                      <Input
+                        type="email"
+                        placeholder="m@example.com"
+                        {...createUserRegister("email", { required: true })}
+                      />
+                    </div>
+
+                    <div className="grid gap-2">
+                      <Label>Password</Label>
+                      <div className="relative">
                         <Input
-                          type="text"
-                          placeholder="Name"
-                          {...createUserRegister("name", { required: true })}
+                          type={showPassword ? "text" : "password"}
+                          className="pr-10"
+                          {...createUserRegister("password", {
+                            required: true,
+                          })}
                         />
-                      </div>
 
-                      <div className="grid gap-2">
-                        <Label>Email</Label>
-                        <Input
-                          type="email"
-                          placeholder="m@example.com"
-                          {...createUserRegister("email", { required: true })}
-                        />
-                      </div>
-
-                      <div className="grid gap-2">
-                        <Label>Password</Label>
-                        <div className="relative">
-                          <Input
-                            type={showPassword ? "text" : "password"}
-                            className="pr-10"
-                            {...createUserRegister("password", {
-                              required: true,
-                            })}
-                          />
-
-                          <Button
-                            type="button"
-                            onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-0 top-1/2 -translate-y-1/2 bg-transparent text-dark hover:bg-transparent"
-                          >
-                            {showPassword ? (
-                              <EyeOff size={18} />
-                            ) : (
-                              <Eye size={18} />
-                            )}
-                          </Button>
-                        </div>
-                      </div>
-
-                      <DialogFooter>
-                        <DialogClose asChild>
-                          <Button variant="outline">Cancel</Button>
-                        </DialogClose>
                         <Button
-                          type="submit"
-                          disabled={createMutation.isPending}
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-0 top-1/2 -translate-y-1/2 bg-transparent text-dark hover:bg-transparent"
                         >
-                          {createMutation.isPending ? "Saving..." : "Save"}
+                          {showPassword ? (
+                            <EyeOff size={18} />
+                          ) : (
+                            <Eye size={18} />
+                          )}
                         </Button>
-                      </DialogFooter>
-                    </form>
-                  </DialogContent>
-                </Dialog>
-              )}
+                      </div>
+                    </div>
 
-              {editingUser && (
-                <Dialog
-                  open={!!editingUser}
-                  onOpenChange={() => setEditingUser(null)}
-                >
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Edit User</DialogTitle>
-                      <DialogDescription>Edit the details below to update the user.</DialogDescription>
-                    </DialogHeader>
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button variant="outline">Cancel</Button>
+                      </DialogClose>
+                      <Button type="submit" disabled={createMutation.isPending}>
+                        {createMutation.isPending ? "Saving..." : "Save"}
+                      </Button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
 
-                    <form className="space-y-4 py-2" onSubmit={updateUser}>
-                      <div className="grid gap-2">
-                        <Label>Name</Label>
+              <Dialog
+                open={!!editingUser}
+                onOpenChange={() => setEditingUser(false)}
+              >
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Edit User</DialogTitle>
+                    <DialogDescription>
+                      Edit the details below to update the user.
+                    </DialogDescription>
+                  </DialogHeader>
+
+                  <form className="space-y-4 py-2" onSubmit={updateUser}>
+                    <div className="grid gap-2">
+                      <Label>Name</Label>
+                      <Input
+                        type="text"
+                        placeholder="Name"
+                        {...updateUserRegister("name", { required: true })}
+                      />
+                    </div>
+
+                    <div className="grid gap-2">
+                      <Label>Email</Label>
+                      <Input
+                        type="email"
+                        placeholder="m@example.com"
+                        {...updateUserRegister("email", { required: true })}
+                      />
+                    </div>
+
+                    <div className="grid gap-2">
+                      <Label>Password</Label>
+                      <div className="relative">
                         <Input
-                          type="text"
-                          placeholder="Name"
-                          {...updateUserRegister("name", { required: true })}
+                          type={showPassword ? "text" : "password"}
+                          className="pr-10"
+                          {...updateUserRegister("password", {
+                            required: false,
+                          })}
                         />
-                      </div>
 
-                      <div className="grid gap-2">
-                        <Label>Email</Label>
-                        <Input
-                          type="email"
-                          placeholder="m@example.com"
-                          {...updateUserRegister("email", { required: true })}
-                        />
-                      </div>
-
-                      <div className="grid gap-2">
-                        <Label>Password</Label>
-                        <div className="relative">
-                          <Input
-                            type={showPassword ? "text" : "password"}
-                            className="pr-10"
-                            {...updateUserRegister("password", {
-                              required: false,
-                            })}
-                          />
-
-                          <Button
-                            type="button"
-                            onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-0 top-1/2 -translate-y-1/2 bg-transparent text-dark hover:bg-transparent"
-                          >
-                            {showPassword ? (
-                              <EyeOff size={18} />
-                            ) : (
-                              <Eye size={18} />
-                            )}
-                          </Button>
-                        </div>
-                      </div>
-
-                      <DialogFooter>
-                        <DialogClose asChild>
-                          <Button variant="outline">Cancel</Button>
-                        </DialogClose>
                         <Button
-                          type="submit"
-                          disabled={updateMutation.isPending}
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-0 top-1/2 -translate-y-1/2 bg-transparent text-dark hover:bg-transparent"
                         >
-                          {updateMutation.isPending ? "Updating..." : "Update"}
+                          {showPassword ? (
+                            <EyeOff size={18} />
+                          ) : (
+                            <Eye size={18} />
+                          )}
                         </Button>
-                      </DialogFooter>
-                    </form>
-                  </DialogContent>
-                </Dialog>
-              )}
+                      </div>
+                    </div>
 
-              {deletingUser && (
-                <Dialog
-                  open={!!deletingUser}
-                  onOpenChange={() => setDeletingUser(null)}
-                >
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Delete User</DialogTitle>
-                    </DialogHeader>
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button variant="outline">Cancel</Button>
+                      </DialogClose>
+                      <Button type="submit" disabled={updateMutation.isPending}>
+                        {updateMutation.isPending ? "Updating..." : "Update"}
+                      </Button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
 
-                    <form className="space-y-4 py-2" onSubmit={deleteUser}>
-                      <DialogDescription>
-                        Are you sure you want to delete this employee? This
-                        action cannot be undone.
-                      </DialogDescription>
-                      <DialogFooter>
-                        <DialogClose asChild>
-                          <Button variant="outline">Cancel</Button>
-                        </DialogClose>
-                        <Button
-                          type="submit"
-                          disabled={deleteMutation.isPending}
-                        >
-                          {deleteMutation.isPending ? "Deleting..." : "Delete"}
-                        </Button>
-                      </DialogFooter>
-                    </form>
-                  </DialogContent>
-                </Dialog>
-              )}
+              <Dialog
+                open={!!deletingUser}
+                onOpenChange={() => setDeletingUser(false)}
+              >
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Delete User</DialogTitle>
+                  </DialogHeader>
+
+                  <form className="space-y-4 py-2" onSubmit={deleteUser}>
+                    <DialogDescription>
+                      Are you sure you want to delete this employee? This action
+                      cannot be undone.
+                    </DialogDescription>
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button variant="outline">Cancel</Button>
+                      </DialogClose>
+                      <Button type="submit" disabled={deleteMutation.isPending}>
+                        {deleteMutation.isPending ? "Deleting..." : "Delete"}
+                      </Button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
 
               <div className="flex justify-between mb-4">
                 <Label>
@@ -503,7 +492,7 @@ export default function UsersPage() {
                               size="sm"
                               className="text-[12px]"
                               variant="secondary"
-                              onClick={() => setEditingUser(user)}
+                              onClick={() => editUser(user)}
                             >
                               <PencilIcon />
                             </Button>
@@ -511,7 +500,7 @@ export default function UsersPage() {
                               size="sm"
                               className="text-[12px] text-red-600"
                               variant="secondary"
-                              onClick={() => setDeletingUser(user)}
+                              onClick={() => removeUser(user)}
                             >
                               <TrashIcon />
                             </Button>

@@ -1,5 +1,5 @@
 import type { QueryKey } from "@tanstack/react-query";
 
-export const QUERY_KEYS = {
+export const query_keys = {
   USERS: ["users"] as QueryKey,
 };

@@ -4,10 +4,11 @@ import { middleware } from "@/lib/auth/middleware";
 import { ProfileController } from "@/lib/controllers/profile-controller";
 import { User } from "@/types";
 import { ToastError } from "@/lib/errors/toast-error";
+import { api } from "@/lib/api/endpoints";
 
 const app = new Hono();
 
-app.patch("/api/profile", middleware, async (c) => {
+app.patch(api.UPDATE_PROFILE, middleware, async (c) => {
   try {
     const body = (await c.req.json()) as User;
 
