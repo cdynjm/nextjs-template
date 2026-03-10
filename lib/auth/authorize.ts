@@ -17,7 +17,7 @@ export async function authorizeUser(
   }
 
   const user = await prisma.user.findFirst({
-    where: { email },
+    where: { email, deleted_at: null },
   });
 
   if (!user) throw new Error("Invalid email or password");
