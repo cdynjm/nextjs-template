@@ -37,6 +37,7 @@ import { User } from "@/types";
 import { ApiResponse } from "@/types";
 import { query_keys } from "@/lib/queries/query-keys";
 import { Eye, EyeOff, PencilIcon, TrashIcon, UsersIcon } from "lucide-react";
+import axios from "axios";
 interface UserForm {
   encrypted_id: string;
   name: string;
@@ -50,23 +51,23 @@ export default function UsersPage() {
 
   const { data: users = [], isLoading } = useQuery({
     queryKey: query_keys.USERS,
+    enabled: !!user?.accessToken,
     queryFn: async () => {
-      const res = await fetch(api.GET_USERS, {
-        headers: { Authorization: `Bearer ${user?.accessToken || ""}` },
+      const res = await axios.get(api.GET_USERS, {
+        headers: {
+          Authorization: `Bearer ${user?.accessToken || ""}`,
+        },
       });
-      if (!res.ok) throw new Error("Failed to fetch users");
-      return res.json();
+
+      return res.data;
     },
     refetchInterval: 10000,
   });
 
   const [addingUser, setAddingUser] = useState<boolean | null>(null);
 
-  const {
-    register: createUserRegister,
-    handleSubmit: createUserHandleSubmit,
-    reset: createUserReset,
-  } = useForm<UserForm>();
+  const { register: createUserRegister, handleSubmit: createUserHandleSubmit } =
+    useForm<UserForm>();
 
   const createUser = createUserHandleSubmit((data: UserForm) => {
     createMutation.mutate(data);
@@ -74,55 +75,38 @@ export default function UsersPage() {
 
   const createMutation = useMutation({
     mutationFn: async (data: UserForm): Promise<ApiResponse> => {
-      const res = await fetch(api.CREATE_USER, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${user?.accessToken || ""}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      const resData = await res.json();
-
-      if (!res.ok) {
-        throw resData;
+      if (!user?.accessToken) {
+        throw new Error("User not authenticated");
       }
 
-      return resData;
+      const res = await axios.post(api.CREATE_USER, data, {
+        headers: {
+          Authorization: `Bearer ${user.accessToken}`,
+        },
+      });
+
+      return res.data;
     },
+
     onSuccess: (data) => {
       toast("Created", {
         description: data.description,
-        action: {
-          label: "Close",
-          onClick: () => console.log(""),
-        },
+        action: { label: "Close", onClick: () => {} },
       });
-
-      createUserReset({
-        name: "",
-        email: "",
-        password: "",
-      });
-
+      
       queryClient.invalidateQueries({ queryKey: query_keys.USERS });
-      setAddingUser(null);
+      setAddingUser(false);
     },
-    onError: (error) => {
-      if (error && typeof error === "object" && "description" in error) {
-        const backendError = error as { description: string };
-        toast("Opss sorry but ...", {
-          description: backendError.description,
-          action: {
-            label: "Close",
-            onClick: () => console.log(""),
-          },
+
+    onError: (error: unknown) => {
+      if (axios.isAxiosError(error)) {
+        toast("Oops, something went wrong", {
+          description: error.response?.data?.description || error.message,
         });
       } else if (error instanceof Error) {
-        toast.error(error.message);
+        toast("Oops, something went wrong", { description: error.message });
       } else {
-        toast.error("Something went wrong");
+        toast("Oops, something went wrong", { description: "Unknown error" });
       }
     },
   });
@@ -154,49 +138,36 @@ export default function UsersPage() {
 
   const updateMutation = useMutation({
     mutationFn: async (data: UserForm): Promise<ApiResponse> => {
-      const res = await fetch(api.UPDATE_USER, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${user?.accessToken || ""}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      const resData = await res.json();
-
-      if (!res.ok) {
-        throw resData;
+      if (!user?.accessToken) {
+        throw new Error("User not authenticated");
       }
 
-      return resData;
+      const res = await axios.patch(api.UPDATE_USER, data, {
+        headers: {
+          Authorization: `Bearer ${user.accessToken}`,
+        },
+      });
+
+      return res.data;
     },
     onSuccess: (data) => {
       toast("Updated", {
         description: data.description,
-        action: {
-          label: "Close",
-          onClick: () => console.log(""),
-        },
+        action: { label: "Close", onClick: () => {} },
       });
 
       queryClient.invalidateQueries({ queryKey: query_keys.USERS });
       setEditingUser(false);
     },
-    onError: (error) => {
-      if (error && typeof error === "object" && "description" in error) {
-        const backendError = error as { description: string };
-        toast("Opss sorry but ...", {
-          description: backendError.description,
-          action: {
-            label: "Close",
-            onClick: () => console.log(""),
-          },
+    onError: (error: unknown) => {
+      if (axios.isAxiosError(error)) {
+        toast("Oops, something went wrong", {
+          description: error.response?.data?.description || error.message,
         });
       } else if (error instanceof Error) {
-        toast.error(error.message);
+        toast("Oops, something went wrong", { description: error.message });
       } else {
-        toast.error("Something went wrong");
+        toast("Oops, something went wrong", { description: "Unknown error" });
       }
     },
   });
@@ -220,55 +191,37 @@ export default function UsersPage() {
 
   const deleteMutation = useMutation({
     mutationFn: async (data: UserForm): Promise<ApiResponse> => {
-      const res = await fetch(api.DELETE_USER, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${user?.accessToken || ""}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      const resData = await res.json();
-
-      if (!res.ok) {
-        throw resData;
+      if (!user?.accessToken) {
+        throw new Error("User not authenticated");
       }
 
-      return resData;
+      const res = await axios.delete(api.DELETE_USER, {
+        data,
+        headers: {
+          Authorization: `Bearer ${user.accessToken}`,
+        },
+      });
+
+      return res.data;
     },
     onSuccess: (data) => {
       toast("Deleted", {
         description: data.description,
-        action: {
-          label: "Close",
-          onClick: () => console.log(""),
-        },
+        action: { label: "Close", onClick: () => {} },
       });
-
-      deleteUserReset({
-        encrypted_id: "",
-      });
-
-      setDeletingUser(false);
 
       queryClient.invalidateQueries({ queryKey: query_keys.USERS });
-      setAddingUser(null);
+      setDeletingUser(false);
     },
-    onError: (error) => {
-      if (error && typeof error === "object" && "description" in error) {
-        const backendError = error as { description: string };
-        toast("Opss sorry but ...", {
-          description: backendError.description,
-          action: {
-            label: "Close",
-            onClick: () => console.log(""),
-          },
+    onError: (error: unknown) => {
+      if (axios.isAxiosError(error)) {
+        toast("Oops, something went wrong", {
+          description: error.response?.data?.description || error.message,
         });
       } else if (error instanceof Error) {
-        toast.error(error.message);
+        toast("Oops, something went wrong", { description: error.message });
       } else {
-        toast.error("Something went wrong");
+        toast("Oops, something went wrong", { description: "Unknown error" });
       }
     },
   });

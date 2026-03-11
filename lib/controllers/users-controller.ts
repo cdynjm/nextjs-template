@@ -22,6 +22,7 @@ export class UsersController {
       );
     } catch (error) {
       console.error(error);
+      return[];
     }
   }
 
@@ -122,7 +123,7 @@ export class UsersController {
 
     return {
       user: deletedUser,
-      toastDescription: "User has been updated successfully.",
+      toastDescription: "User has been deleted successfully.",
     };
   }
 }

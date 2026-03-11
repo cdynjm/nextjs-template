@@ -9,8 +9,8 @@ import { api } from "@/lib/api/endpoints";
 const app = new Hono();
 
 app.get(api.GET_USERS, middleware, async (c) => {
-  const data = await UsersController.getUsers();
-  return c.json(data);
+  const users = await UsersController.getUsers();
+  return c.json(users);
 });
 
 app.post(api.CREATE_USER, middleware, async (c) => {
