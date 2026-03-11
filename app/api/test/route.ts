@@ -1,5 +1,5 @@
 // app/api/test/route.ts
-import { prisma } from '@/lib/db/postgres-prisma';
+import { prisma } from '@/prisma/postgres-prisma';
 
 export async function GET() {
   try {

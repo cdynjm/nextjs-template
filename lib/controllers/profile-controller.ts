@@ -1,6 +1,4 @@
-import { database } from "../helpers/database-name";
-const { prisma } = await import(`@/lib/db/${database()}-prisma`);
-
+import { prisma } from "@/lib/db/prisma";
 import { decrypt, generateKey } from "@/lib/security/cipher";
 import bcrypt from "bcryptjs";
 import { User } from "@/types";
