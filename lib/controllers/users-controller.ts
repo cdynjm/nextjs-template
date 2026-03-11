@@ -1,5 +1,7 @@
+import { database } from "../helpers/database-name";
+const { prisma } = await import(`@/lib/db/${database()}-prisma`);
+
 import { encrypt, decrypt, generateKey } from "@/lib/security/cipher";
-import { prisma } from "@/lib/db/postgres-prisma";
 import bcrypt from "bcryptjs";
 import { User } from "@/types";
 import { ToastError } from "../errors/toast-error";
@@ -12,7 +14,7 @@ export class UsersController {
       });
 
       return await Promise.all(
-        usersData.map(async (user) => ({
+        usersData.map(async (user: User) => ({
           encrypted_id: await encrypt(user.id.toString(), key),
           name: user.name,
           email: user.email,
