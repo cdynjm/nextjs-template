@@ -1,6 +1,3 @@
-export function database() {
-   if(process.env.DATABASE === "postgres")
-    return "postgres";
-   else
-    return "mysql";
+export function database(): "postgres" | "mysql" {
+  return process.env.DATABASE === "postgres" ? "postgres" : "mysql";
 }

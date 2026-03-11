@@ -1,5 +1,7 @@
+import { database } from "../helpers/database-name";
+const { prisma } = await import(`@/lib/db/${database()}-prisma`);
+
 import { compare } from "bcryptjs";
-import { prisma } from "@/lib/db/postgres-prisma";
 import { checkRateLimit, resetRateLimit } from "@/lib/auth/rate-limiter";
 import { RequestInternal } from "next-auth";
 
