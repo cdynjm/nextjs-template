@@ -1,5 +1,5 @@
 import { compare } from "bcryptjs";
-import { prisma } from "@/lib/db/prisma";
+import { prisma } from "@/lib/db/postgres-prisma";
 import { checkRateLimit, resetRateLimit } from "@/lib/auth/rate-limiter";
 import { RequestInternal } from "next-auth";
 

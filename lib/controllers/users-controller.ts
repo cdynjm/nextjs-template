@@ -1,5 +1,5 @@
 import { encrypt, decrypt, generateKey } from "@/lib/security/cipher";
-import { prisma } from "@/lib/db/prisma";
+import { prisma } from "@/lib/db/postgres-prisma";
 import bcrypt from "bcryptjs";
 import { User } from "@/types";
 import { ToastError } from "../errors/toast-error";
