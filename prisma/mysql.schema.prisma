@@ -6,6 +6,7 @@ generator client {
 datasource db {
   provider = "mysql"
 }
+
 model User {
   id         Int       @id @default(autoincrement())
   name       String?
