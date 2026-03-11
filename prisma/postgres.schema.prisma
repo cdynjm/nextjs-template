@@ -1,4 +1,13 @@
-/* model User {
+
+generator client {
+  provider = "prisma-client"
+  output   = "./generated/prisma"
+  binaryTargets   = ["native", "debian-openssl-3.0.x"]
+}
+datasource db {
+  provider = "postgres"
+}
+ model User {
   id         Int       @id @default(autoincrement())
   name       String?
   email      String    @unique
@@ -8,4 +17,4 @@
   deleted_at DateTime?
 
   @@map("users")
-} */
+} 
