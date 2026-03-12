@@ -1,8 +1,8 @@
 import { prisma } from "@/lib/db/prisma";
-import { encrypt, decrypt, generateKey } from "@/lib/security/cipher";
+import { encrypt, decrypt, generateKey } from "@/lib/crypto/cipher";
 import bcrypt from "bcryptjs";
 import { User } from "@/types";
-import { ToastError } from "../errors/toast-error";
+import { ToastError } from "../exceptions/toast-error";
 import { getAuth } from "../auth/session/server-use-auth";
 export class UsersController {
   static async getUsers() {

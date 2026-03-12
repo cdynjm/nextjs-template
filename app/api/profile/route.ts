@@ -3,7 +3,7 @@ import { handle } from "hono/vercel";
 import { middleware } from "@/lib/auth/middleware";
 import { ProfileController } from "@/lib/controllers/profile-controller";
 import { User } from "@/types";
-import { ToastError } from "@/lib/errors/toast-error";
+import { ToastError } from "@/lib/exceptions/toast-error";
 import { api } from "@/lib/api/endpoints";
 
 const app = new Hono();

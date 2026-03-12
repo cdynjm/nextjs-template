@@ -1,7 +1,7 @@
 
 import { CallbacksOptions } from "next-auth";
 import jwt from "jsonwebtoken";
-import { generateKey, encrypt } from "../security/cipher";
+import { generateKey, encrypt } from "../crypto/cipher";
 
 export const authCallbacks: Partial<CallbacksOptions> = {
   async jwt({ token, user, trigger, session }) {

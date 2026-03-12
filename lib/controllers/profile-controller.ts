@@ -1,8 +1,8 @@
 import { prisma } from "@/lib/db/prisma";
-import { decrypt, generateKey } from "@/lib/security/cipher";
+import { decrypt, generateKey } from "@/lib/crypto/cipher";
 import bcrypt from "bcryptjs";
 import { User } from "@/types";
-import { ToastError } from "../errors/toast-error";
+import { ToastError } from "../exceptions/toast-error";
 
 export class ProfileController {
   static async updateProfile(data: User) {

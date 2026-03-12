@@ -1,5 +1,5 @@
 import { Session } from "next-auth";
-import { User } from "./user";
+import { User } from "./globals";
 
 export interface AuthSession {
   user: User;
