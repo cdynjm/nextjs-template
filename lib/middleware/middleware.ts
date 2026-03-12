@@ -1,5 +1,5 @@
 import { Context, Next } from "hono"
-import { verifyToken } from "../auth/verify"
+import { verifyToken } from "./verify"
 
 export const middleware = async (c: Context, next: Next) => {
   const authHeader = c.req.header("authorization")

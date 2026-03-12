@@ -3,7 +3,7 @@
 import { useEffect, Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import NProgress from "nprogress";
-import "@/app/styles/nprogress.css";
+import "@/app/css/nprogress.css";
 
 NProgress.configure({
   showSpinner: false,

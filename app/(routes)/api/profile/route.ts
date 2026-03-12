@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { handle } from "hono/vercel";
-import { middleware } from "@/lib/auth/middleware";
+import { middleware } from "@/lib/middleware/middleware";
 import { ProfileService } from "@/lib/services/profile-service";
 import { User } from "@/types";
 import { ToastError } from "@/lib/exceptions/toast-error";
