@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "./authenticate";
+import { authOptions } from "../authenticate";
 import { Session } from "next-auth";
 
 export async function getAuth() {

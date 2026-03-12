@@ -6,7 +6,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Navbar } from "@/components/navbar";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAuth } from "@/lib/auth/client-use-auth";
+import { useAuth } from "@/lib/auth/session/client-use-auth";
 import { SkeletonDelay } from "@/components/ui/skeleton-delay";
 import { SkeletonCard, SkeletonTable } from "@/components/skeleton-card";
 import FormattedDate from "@/components/formatted-date";

@@ -3,7 +3,7 @@ import { encrypt, decrypt, generateKey } from "@/lib/security/cipher";
 import bcrypt from "bcryptjs";
 import { User } from "@/types";
 import { ToastError } from "../errors/toast-error";
-import { getAuth } from "../auth/server-use-auth";
+import { getAuth } from "../auth/session/server-use-auth";
 export class UsersController {
   static async getUsers() {
     try {

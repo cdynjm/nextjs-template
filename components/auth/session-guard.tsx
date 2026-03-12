@@ -4,7 +4,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
-import { useAuth } from "@/lib/auth/client-use-auth";
+import { useAuth } from "@/lib/auth/session/client-use-auth";
 interface DecodedToken {
   exp: number;
 }

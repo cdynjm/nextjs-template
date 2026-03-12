@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { NProgressLink, route } from "./ui/nprogress-link";
 import { LogOutIcon, User2Icon } from "lucide-react";
-import { useAuth } from "@/lib/auth/client-use-auth";
+import { useAuth } from "@/lib/auth/session/client-use-auth";
 
 export function UserDropdown() {
   const { user } = useAuth();

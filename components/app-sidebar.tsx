@@ -36,7 +36,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useAuth } from "@/lib/auth/client-use-auth";
+import { useAuth } from "@/lib/auth/session/client-use-auth";
 import { signOut } from "next-auth/react";
 
 const menus = [

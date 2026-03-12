@@ -5,7 +5,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Navbar } from "@/components/navbar";
 import SessionGuard from "@/components/auth/session-guard";
-import { useAuth } from "@/lib/auth/client-use-auth";
+import { useAuth } from "@/lib/auth/session/client-use-auth";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
