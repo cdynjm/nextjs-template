@@ -50,8 +50,10 @@ app.patch(api.UPDATE_USER, middleware, async (c) => {
     const updated = await UsersController.updateUser(body);
 
     return c.json({
+      user: updated.user,
       success: true,
       description: updated.toastDescription,
+      forceLogout: updated.forceLogout
     });
   } catch (error) {
     if (error instanceof ToastError) {

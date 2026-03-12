@@ -4,7 +4,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Navbar } from "@/components/navbar";
 import SessionGuard from "@/components/auth/session-guard";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/lib/auth/client-use-auth";
 import { SkeletonDelay } from "@/components/ui/skeleton-delay";
 import { SkeletonCard } from "@/components/skeleton-card";
 

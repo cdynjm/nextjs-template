@@ -3,12 +3,13 @@ import { encrypt, decrypt, generateKey } from "@/lib/security/cipher";
 import bcrypt from "bcryptjs";
 import { User } from "@/types";
 import { ToastError } from "../errors/toast-error";
+import { getAuth } from "../auth/server-use-auth";
 export class UsersController {
   static async getUsers() {
     try {
       const key = await generateKey();
       const usersData = await prisma.user.findMany({
-        where: { deleted_at: null }
+        where: { deleted_at: null },
       });
 
       return await Promise.all(
@@ -22,7 +23,7 @@ export class UsersController {
       );
     } catch (error) {
       console.error(error);
-      return[];
+      return [];
     }
   }
 
@@ -50,7 +51,7 @@ export class UsersController {
     };
 
     const createdUser = await prisma.user.create({
-      data: createData
+      data: createData,
     });
 
     return {
@@ -63,7 +64,7 @@ export class UsersController {
     if (!data.encrypted_id) {
       throw new Error("encrypted_id is required");
     }
-    
+
     const key = await generateKey();
     const userIdString = await decrypt(data.encrypted_id, key);
     const userId = parseInt(userIdString, 10);
@@ -94,12 +95,24 @@ export class UsersController {
 
     const updatedUser = await prisma.user.update({
       where: { id: userId },
-      data: updateData
+      data: updateData,
     });
+
+    const { user } = await getAuth();
+    let forceLogout = false;
+    if (user?.encrypted_id) {
+      const authUserIdString = await decrypt(user.encrypted_id, key);
+      const authUserId = parseInt(authUserIdString, 10);
+
+      if (authUserId === userId) {
+        forceLogout = true;
+      }
+    }
 
     return {
       user: updatedUser,
       toastDescription: "User has been updated successfully.",
+      forceLogout,
     };
   }
 
@@ -113,12 +126,12 @@ export class UsersController {
     const userId = parseInt(userIdString, 10);
 
     const deleteData = {
-      deleted_at: new Date()
+      deleted_at: new Date(),
     };
 
     const deletedUser = await prisma.user.update({
       where: { id: userId },
-      data: deleteData
+      data: deleteData,
     });
 
     return {

@@ -6,7 +6,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Navbar } from "@/components/navbar";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/lib/auth/client-use-auth";
 import { SkeletonDelay } from "@/components/ui/skeleton-delay";
 import { SkeletonCard, SkeletonTable } from "@/components/skeleton-card";
 import FormattedDate from "@/components/formatted-date";
@@ -46,7 +46,7 @@ interface UserForm {
 }
 
 export default function UsersPage() {
-  const { user } = useAuth();
+  const { user, updateSession } = useAuth();
   const queryClient = useQueryClient();
 
   const { data: users = [], isLoading } = useQuery({
@@ -93,7 +93,7 @@ export default function UsersPage() {
         description: data.description,
         action: { label: "Close", onClick: () => {} },
       });
-      
+
       queryClient.invalidateQueries({ queryKey: query_keys.USERS });
       setAddingUser(false);
     },
@@ -155,6 +155,14 @@ export default function UsersPage() {
         description: data.description,
         action: { label: "Close", onClick: () => {} },
       });
+
+      if (data.forceLogout) {
+        updateSession({
+          user: {
+            ...data.user,
+          },
+        });
+      }
 
       queryClient.invalidateQueries({ queryKey: query_keys.USERS });
       setEditingUser(false);
