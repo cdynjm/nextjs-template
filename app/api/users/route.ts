@@ -53,7 +53,7 @@ app.patch(api.UPDATE_USER, middleware, async (c) => {
       user: updated.user,
       success: true,
       description: updated.toastDescription,
-      forceLogout: updated.updateSession
+      updateSession: updated.updateSession
     });
   } catch (error) {
     if (error instanceof ToastError) {
