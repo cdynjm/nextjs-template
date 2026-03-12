@@ -4,7 +4,8 @@ import bcrypt from "bcryptjs";
 import { User } from "@/types";
 import { ToastError } from "../exceptions/toast-error";
 import { getAuth } from "../auth/session/server-use-auth";
-export class UsersController {
+
+export class UsersService {
   static async getUsers() {
     try {
       const key = await generateKey();

@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import { User } from "@/types";
 import { ToastError } from "../exceptions/toast-error";
 
-export class ProfileController {
+export class ProfileService {
   static async updateProfile(data: User) {
     if (!data.encrypted_id) {
       throw new Error("encrypted_id is required");

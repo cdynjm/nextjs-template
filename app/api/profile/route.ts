@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { handle } from "hono/vercel";
 import { middleware } from "@/lib/auth/middleware";
-import { ProfileController } from "@/lib/controllers/profile-controller";
+import { ProfileService } from "@/lib/services/profile-service";
 import { User } from "@/types";
 import { ToastError } from "@/lib/exceptions/toast-error";
 import { api } from "@/lib/api/endpoints";
@@ -12,7 +12,7 @@ app.patch(api.UPDATE_PROFILE, middleware, async (c) => {
   try {
     const body = (await c.req.json()) as User;
 
-    const updated = await ProfileController.updateProfile(body);
+    const updated = await ProfileService.updateProfile(body);
 
     return c.json({
       success: true,

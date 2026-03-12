@@ -2,14 +2,14 @@ import { Hono } from "hono";
 import { handle } from "hono/vercel";
 import { middleware } from "@/lib/auth/middleware";
 import { User } from "@/types";
-import { UsersController } from "@/lib/controllers/users-controller";
+import { UsersService } from "@/lib/services/users-service";
 import { ToastError } from "@/lib/exceptions/toast-error";
 import { api } from "@/lib/api/endpoints";
 
 const app = new Hono();
 
 app.get(api.GET_USERS, middleware, async (c) => {
-  const users = await UsersController.getUsers();
+  const users = await UsersService.getUsers();
   return c.json(users);
 });
 
@@ -17,7 +17,7 @@ app.post(api.CREATE_USER, middleware, async (c) => {
   try {
     const body = (await c.req.json()) as User;
     
-    const created = await UsersController.createUser(body);
+    const created = await UsersService.createUser(body);
 
     return c.json({
       success: true,
@@ -47,7 +47,7 @@ app.patch(api.UPDATE_USER, middleware, async (c) => {
   try {
     const body = (await c.req.json()) as User;
 
-    const updated = await UsersController.updateUser(body);
+    const updated = await UsersService.updateUser(body);
 
     return c.json({
       user: updated.user,
@@ -79,7 +79,7 @@ app.delete(api.DELETE_USER, middleware, async (c) => {
   try {
     const body = (await c.req.json()) as User;
 
-    const deleted = await UsersController.deleteUser(body);
+    const deleted = await UsersService.deleteUser(body);
 
     return c.json({
       success: true,
