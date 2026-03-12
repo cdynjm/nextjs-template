@@ -1,20 +1,21 @@
 generator client {
-  provider = "prisma-client"
-  output   = "./generated/prisma"
-  binaryTargets   = ["native", "debian-openssl-3.0.x"]
+  provider      = "prisma-client"
+  output        = "./generated/prisma"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
+
 datasource db {
   provider = "mysql"
 }
 
 model User {
   id         Int       @id @default(autoincrement())
-  name       String?
-  email      String    @unique
-  password   String
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
-  deleted_at DateTime?
+  name       String?   @db.VarChar(255)
+  email      String    @unique(map: "email") @db.VarChar(255)
+  password   String    @db.VarChar(255)
+  created_at DateTime  @default(now()) @db.Timestamp(0)
+  updated_at DateTime  @default(now()) @updatedAt @db.Timestamp(0)
+  deleted_at DateTime? @db.Timestamp(0)
 
   @@map("users")
 }
