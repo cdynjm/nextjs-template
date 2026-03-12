@@ -99,20 +99,20 @@ export class UsersController {
     });
 
     const { user } = await getAuth();
-    let forceLogout = false;
+    let updateSession = false;
     if (user?.encrypted_id) {
       const authUserIdString = await decrypt(user.encrypted_id, key);
       const authUserId = parseInt(authUserIdString, 10);
 
       if (authUserId === userId) {
-        forceLogout = true;
+        updateSession = true;
       }
     }
 
     return {
       user: updatedUser,
       toastDescription: "User has been updated successfully.",
-      forceLogout,
+      updateSession,
     };
   }
 

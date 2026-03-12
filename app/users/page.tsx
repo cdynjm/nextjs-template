@@ -156,7 +156,7 @@ export default function UsersPage() {
         action: { label: "Close", onClick: () => {} },
       });
 
-      if (data.forceLogout) {
+      if (data.updateSession) {
         updateSession({
           user: {
             ...data.user,
