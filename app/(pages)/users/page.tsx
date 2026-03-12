@@ -415,9 +415,9 @@ export default function UsersPage() {
                 </Button>
               </div>
 
-              <div className="rounded-md border">
+              <div className="rounded-md">
                 <Table>
-                  <TableHeader className="sticky top-0 z-10 bg-muted">
+                  <TableHeader className="sticky top-0 z-10">
                     <TableRow>
                       <TableHead>#</TableHead>
                       <TableHead>Name</TableHead>
