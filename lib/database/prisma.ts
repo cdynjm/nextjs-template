@@ -1,5 +1,5 @@
 import { database } from "@/lib/helpers/database-name";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "@/prisma/generated/prisma/client";
 
 let prismaClient;
 
