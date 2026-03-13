@@ -55,7 +55,7 @@ export default function UsersPage() {
     queryFn: async () => {
       const res = await axios.get(api.GET_USERS, {
         headers: {
-          Authorization: `Bearer ${user?.accessToken || ""}`,
+          Authorization: `Bearer ${user?.accessToken}`,
         },
       });
 
@@ -436,39 +436,47 @@ export default function UsersPage() {
                       </TableRow>
                     )}
 
-                    {users.map((user: User, index: number) => (
-                      <TableRow key={index}>
-                        <TableCell>{index + 1}</TableCell>
-                        <TableCell>{user.name}</TableCell>
-                        <TableCell>{user.email}</TableCell>
-                        <TableCell>
-                          <FormattedDate
-                            date={user.updated_at}
-                            variant="datetime"
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <Button
-                              size="sm"
-                              className="text-[12px]"
-                              variant="secondary"
-                              onClick={() => editUser(user)}
-                            >
-                              <PencilIcon />
-                            </Button>
-                            <Button
-                              size="sm"
-                              className="text-[12px] text-red-600"
-                              variant="secondary"
-                              onClick={() => removeUser(user)}
-                            >
-                              <TrashIcon />
-                            </Button>
-                          </div>
+                    {users.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={5} className="text-center">
+                          <p className="p-2 text-gray-600">Opss, sorry... no data found.</p>
                         </TableCell>
                       </TableRow>
-                    ))}
+                    ) : (
+                      users.map((user: User, index: number) => (
+                        <TableRow key={index}>
+                          <TableCell>{index + 1}</TableCell>
+                          <TableCell>{user.name}</TableCell>
+                          <TableCell>{user.email}</TableCell>
+                          <TableCell>
+                            <FormattedDate
+                              date={user.updated_at}
+                              variant="datetime"
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <Button
+                                size="sm"
+                                className="text-[12px]"
+                                variant="secondary"
+                                onClick={() => editUser(user)}
+                              >
+                                <PencilIcon />
+                              </Button>
+                              <Button
+                                size="sm"
+                                className="text-[12px] text-red-600"
+                                variant="secondary"
+                                onClick={() => removeUser(user)}
+                              >
+                                <TrashIcon />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
                   </TableBody>
                 </Table>
               </div>
