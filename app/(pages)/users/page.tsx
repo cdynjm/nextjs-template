@@ -247,7 +247,7 @@ export default function UsersPage() {
                 open={!!addingUser}
                 onOpenChange={() => setAddingUser(false)}
               >
-                <DialogContent>
+                <DialogContent className="sm:max-w-[500px]">
                   <DialogHeader>
                     <DialogTitle>Add User</DialogTitle>
                     <DialogDescription>
@@ -255,59 +255,60 @@ export default function UsersPage() {
                     </DialogDescription>
                   </DialogHeader>
 
-                  <form className="space-y-4 py-2" onSubmit={createUser}>
-                    <div className="grid gap-2">
-                      <Label>Name</Label>
+                  <div className="grid gap-2">
+                    <Label>Name</Label>
+                    <Input
+                      type="text"
+                      placeholder="Name"
+                      {...createUserRegister("name", { required: true })}
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label>Email</Label>
+                    <Input
+                      type="email"
+                      placeholder="m@example.com"
+                      {...createUserRegister("email", { required: true })}
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label>Password</Label>
+                    <div className="relative">
                       <Input
-                        type="text"
-                        placeholder="Name"
-                        {...createUserRegister("name", { required: true })}
+                        type={showPassword ? "text" : "password"}
+                        className="pr-10"
+                        {...createUserRegister("password", {
+                          required: true,
+                        })}
                       />
-                    </div>
 
-                    <div className="grid gap-2">
-                      <Label>Email</Label>
-                      <Input
-                        type="email"
-                        placeholder="m@example.com"
-                        {...createUserRegister("email", { required: true })}
-                      />
-                    </div>
-
-                    <div className="grid gap-2">
-                      <Label>Password</Label>
-                      <div className="relative">
-                        <Input
-                          type={showPassword ? "text" : "password"}
-                          className="pr-10"
-                          {...createUserRegister("password", {
-                            required: true,
-                          })}
-                        />
-
-                        <Button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-0 top-1/2 -translate-y-1/2 bg-transparent text-dark hover:bg-transparent"
-                        >
-                          {showPassword ? (
-                            <EyeOff size={18} />
-                          ) : (
-                            <Eye size={18} />
-                          )}
-                        </Button>
-                      </div>
-                    </div>
-
-                    <DialogFooter>
-                      <DialogClose asChild>
-                        <Button variant="outline">Cancel</Button>
-                      </DialogClose>
-                      <Button type="submit" disabled={createMutation.isPending}>
-                        {createMutation.isPending ? "Saving..." : "Save"}
+                      <Button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-0 top-1/2 -translate-y-1/2 bg-transparent text-dark hover:bg-transparent"
+                      >
+                        {showPassword ? (
+                          <EyeOff size={18} />
+                        ) : (
+                          <Eye size={18} />
+                        )}
                       </Button>
-                    </DialogFooter>
-                  </form>
+                    </div>
+                  </div>
+
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline">Cancel</Button>
+                    </DialogClose>
+                    <Button
+                      onClick={createUser}
+                      disabled={createMutation.isPending}
+                    >
+                      {createMutation.isPending ? "Saving..." : "Save"}
+                    </Button>
+                  </DialogFooter>
                 </DialogContent>
               </Dialog>
 
@@ -315,7 +316,7 @@ export default function UsersPage() {
                 open={!!editingUser}
                 onOpenChange={() => setEditingUser(false)}
               >
-                <DialogContent>
+                <DialogContent className="sm:max-w-[500px]">
                   <DialogHeader>
                     <DialogTitle>Edit User</DialogTitle>
                     <DialogDescription>
@@ -323,59 +324,60 @@ export default function UsersPage() {
                     </DialogDescription>
                   </DialogHeader>
 
-                  <form className="space-y-4 py-2" onSubmit={updateUser}>
-                    <div className="grid gap-2">
-                      <Label>Name</Label>
+                  <div className="grid gap-2">
+                    <Label>Name</Label>
+                    <Input
+                      type="text"
+                      placeholder="Name"
+                      {...updateUserRegister("name", { required: true })}
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label>Email</Label>
+                    <Input
+                      type="email"
+                      placeholder="m@example.com"
+                      {...updateUserRegister("email", { required: true })}
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label>Password</Label>
+                    <div className="relative">
                       <Input
-                        type="text"
-                        placeholder="Name"
-                        {...updateUserRegister("name", { required: true })}
+                        type={showPassword ? "text" : "password"}
+                        className="pr-10"
+                        {...updateUserRegister("password", {
+                          required: false,
+                        })}
                       />
-                    </div>
 
-                    <div className="grid gap-2">
-                      <Label>Email</Label>
-                      <Input
-                        type="email"
-                        placeholder="m@example.com"
-                        {...updateUserRegister("email", { required: true })}
-                      />
-                    </div>
-
-                    <div className="grid gap-2">
-                      <Label>Password</Label>
-                      <div className="relative">
-                        <Input
-                          type={showPassword ? "text" : "password"}
-                          className="pr-10"
-                          {...updateUserRegister("password", {
-                            required: false,
-                          })}
-                        />
-
-                        <Button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-0 top-1/2 -translate-y-1/2 bg-transparent text-dark hover:bg-transparent"
-                        >
-                          {showPassword ? (
-                            <EyeOff size={18} />
-                          ) : (
-                            <Eye size={18} />
-                          )}
-                        </Button>
-                      </div>
-                    </div>
-
-                    <DialogFooter>
-                      <DialogClose asChild>
-                        <Button variant="outline">Cancel</Button>
-                      </DialogClose>
-                      <Button type="submit" disabled={updateMutation.isPending}>
-                        {updateMutation.isPending ? "Updating..." : "Update"}
+                      <Button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-0 top-1/2 -translate-y-1/2 bg-transparent text-dark hover:bg-transparent"
+                      >
+                        {showPassword ? (
+                          <EyeOff size={18} />
+                        ) : (
+                          <Eye size={18} />
+                        )}
                       </Button>
-                    </DialogFooter>
-                  </form>
+                    </div>
+                  </div>
+
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline">Cancel</Button>
+                    </DialogClose>
+                    <Button
+                      onClick={updateUser}
+                      disabled={updateMutation.isPending}
+                    >
+                      {updateMutation.isPending ? "Updating..." : "Update"}
+                    </Button>
+                  </DialogFooter>
                 </DialogContent>
               </Dialog>
 
@@ -383,25 +385,27 @@ export default function UsersPage() {
                 open={!!deletingUser}
                 onOpenChange={() => setDeletingUser(false)}
               >
-                <DialogContent>
+                <DialogContent className="sm:max-w-[600px]">
                   <DialogHeader>
                     <DialogTitle>Delete User</DialogTitle>
                   </DialogHeader>
 
-                  <form className="space-y-4 py-2" onSubmit={deleteUser}>
-                    <DialogDescription>
-                      Are you sure you want to delete this employee? This action
-                      cannot be undone.
-                    </DialogDescription>
-                    <DialogFooter>
-                      <DialogClose asChild>
-                        <Button variant="outline">Cancel</Button>
-                      </DialogClose>
-                      <Button type="submit" disabled={deleteMutation.isPending}>
-                        {deleteMutation.isPending ? "Deleting..." : "Delete"}
-                      </Button>
-                    </DialogFooter>
-                  </form>
+                  <DialogDescription>
+                    Are you sure you want to delete this employee? This action
+                    cannot be undone.
+                  </DialogDescription>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline">Cancel</Button>
+                    </DialogClose>
+                    <Button
+                      variant="destructive"
+                      onClick={deleteUser}
+                      disabled={deleteMutation.isPending}
+                    >
+                      {deleteMutation.isPending ? "Deleting..." : "Delete"}
+                    </Button>
+                  </DialogFooter>
                 </DialogContent>
               </Dialog>
 
@@ -439,7 +443,9 @@ export default function UsersPage() {
                     {users.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={5} className="text-center">
-                          <p className="p-2 text-gray-600">Opss, sorry... no data found.</p>
+                          <p className="p-2 text-gray-600">
+                            Opss, sorry... no data found.
+                          </p>
                         </TableCell>
                       </TableRow>
                     ) : (

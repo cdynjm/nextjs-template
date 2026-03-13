@@ -61,7 +61,7 @@ export default function LoginPage() {
         </CardHeader>
 
         <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <div className="space-y-5">
             {error && <p className="text-sm text-red-500">{error}</p>}
 
             <div className="grid gap-2">
@@ -93,10 +93,14 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <Button className="w-full" disabled={loading}>
+            <Button
+              className="w-full"
+              disabled={loading}
+              onClick={handleSubmit(onSubmit)}
+            >
               {loading ? "Logging in..." : "Login"}
             </Button>
-          </form>
+          </div>
         </CardContent>
 
         <CardFooter>
