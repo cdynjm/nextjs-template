@@ -4,28 +4,22 @@ import bcrypt from "bcryptjs";
 import { User } from "@/types";
 import { ToastError } from "../exceptions/toast-error";
 import { getAuth } from "../auth/session/server-use-auth";
-
+import { Prisma } from "@/prisma/generated/prisma/client";
+import { UserUpdateInput } from "@/prisma/generated/prisma/models";
 export class UsersService {
   static async getUsers() {
-    try {
-      const key = await generateKey();
-      const usersData = await prisma.user.findMany({
-        where: { deleted_at: null },
-      });
+    const key = await generateKey();
 
-      return await Promise.all(
-        usersData.map(async (user) => ({
-          encrypted_id: await encrypt(user.id.toString(), key),
-          name: user.name,
-          email: user.email,
-          created_at: user.created_at,
-          updated_at: user.updated_at,
-        })),
-      );
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
+    const usersData = await prisma.user.findMany({
+      where: { deleted_at: null },
+    });
+
+    return await Promise.all(
+      usersData.map(async ({ id, ...rest }) => ({
+        encrypted_id: await encrypt(id.toString(), key),
+        ...rest,
+      })),
+    );
   }
 
   static async createUser(data: User) {
@@ -45,18 +39,17 @@ export class UsersService {
       throw new ToastError("Username is already taken");
     }
 
-    const createData = {
+    const createData: Partial<Prisma.UserCreateInput> = {
       email: data.email.trim(),
       name: data.name.trim(),
       password: await bcrypt.hash(data.password.trim(), 10),
     };
 
-    const createdUser = await prisma.user.create({
-      data: createData,
+    await prisma.user.create({
+      data: createData as Prisma.UserCreateInput,
     });
 
     return {
-      user: createdUser,
       toastDescription: "User has been created successfully.",
     };
   }
@@ -70,7 +63,7 @@ export class UsersService {
     const userIdString = await decrypt(data.encrypted_id, key);
     const userId = parseInt(userIdString, 10);
 
-    const updateData: { email?: string; name?: string; password?: string } = {};
+    const updateData: Partial<UserUpdateInput> = {};
 
     if (data.email && data.name) {
       const emailTrimmed = data.email.trim();
@@ -96,7 +89,7 @@ export class UsersService {
 
     const updatedUser = await prisma.user.update({
       where: { id: userId },
-      data: updateData,
+      data: updateData as Prisma.UserUpdateInput,
     });
 
     const { user } = await getAuth();
@@ -130,13 +123,12 @@ export class UsersService {
       deleted_at: new Date(),
     };
 
-    const deletedUser = await prisma.user.update({
+    await prisma.user.update({
       where: { id: userId },
       data: deleteData,
     });
 
     return {
-      user: deletedUser,
       toastDescription: "User has been deleted successfully.",
     };
   }

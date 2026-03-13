@@ -3,7 +3,7 @@ import { decrypt, generateKey } from "@/lib/crypto/cipher";
 import bcrypt from "bcryptjs";
 import { User } from "@/types";
 import { ToastError } from "../exceptions/toast-error";
-
+import { Prisma } from "@/prisma/generated/prisma/client";
 export class ProfileService {
   static async updateProfile(data: User) {
     if (!data.encrypted_id) {
@@ -14,7 +14,7 @@ export class ProfileService {
     const userIdString = await decrypt(data.encrypted_id, key);
     const userId = parseInt(userIdString, 10);
 
-    const updateData: { email?: string; name?: string; password?: string } = {};
+    const updateData: Partial<Prisma.UserUpdateInput> = {};
     
     if (data.email && data.name) {
       const emailTrimmed = data.email.trim();
@@ -38,13 +38,9 @@ export class ProfileService {
       updateData.password = await bcrypt.hash(data.password.trim(), 10);
     }
 
-    if (Object.keys(updateData).length === 0) {
-      throw new Error("No valid data to update");
-    }
-
     const updatedUser = await prisma.user.update({
       where: { id: userId },
-      data: updateData,
+      data: updateData as Prisma.UserUpdateInput,
       select: {
         name: true,
         email: true,
