@@ -53,6 +53,9 @@ export class UsersService {
   }
 
   static async updateUser(data: User) {
+    const { user } = await getAuth();
+    let updateSession = false as boolean;
+
     if (!data.encrypted_id) {
       throw new Error("encrypted_id is required");
     }
@@ -90,8 +93,6 @@ export class UsersService {
       data: updateData as Prisma.UserUpdateInput,
     });
 
-    const { user } = await getAuth();
-    let updateSession = false;
     if (user?.encrypted_id) {
       const authUserIdString = await decrypt(user.encrypted_id, key);
       const authUserId = parseInt(authUserIdString, 10);
@@ -109,6 +110,8 @@ export class UsersService {
   }
 
   static async deleteUser(data: User) {
+    const { user } = await getAuth();
+
     if (!data.encrypted_id) {
       throw new Error("encrypted_id is required");
     }
@@ -116,6 +119,15 @@ export class UsersService {
     const key = await generateKey();
     const userIdString = await decrypt(data.encrypted_id, key);
     const userId = parseInt(userIdString, 10);
+
+    if (user?.encrypted_id) {
+      const authUserIdString = await decrypt(user.encrypted_id, key);
+      const authUserId = parseInt(authUserIdString, 10);
+
+      if(authUserId === userId) {
+        throw new ToastError("Authenticated user cannot be deleted.");
+      }
+    }
 
     await prisma.user.delete({ id: userId });
 

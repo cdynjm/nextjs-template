@@ -432,15 +432,13 @@ export default function UsersPage() {
                   </TableHeader>
 
                   <TableBody>
-                    {isLoading && (
+                    {isLoading ? (
                       <TableRow>
                         <TableCell colSpan={5}>
                           <SkeletonTable />
                         </TableCell>
                       </TableRow>
-                    )}
-
-                    {users.length === 0 ? (
+                    ) : users.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={5} className="text-center">
                           <p className="p-2 text-gray-600">
