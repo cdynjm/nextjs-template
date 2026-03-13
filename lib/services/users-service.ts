@@ -117,7 +117,7 @@ export class UsersService {
     const userIdString = await decrypt(data.encrypted_id, key);
     const userId = parseInt(userIdString, 10);
 
-    await prisma.user.softDelete({ id: userId });
+    await prisma.user.delete({ id: userId });
 
     return {
       toastDescription: "User has been deleted successfully.",

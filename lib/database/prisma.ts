@@ -34,7 +34,7 @@ const prisma = prismaClient.$extends({
 
   model: {
     $allModels: {
-      async softDelete<T>(
+      async delete<T>(
         this: T,
         where: Prisma.Args<T, "update">["where"]
       ): Promise<Prisma.Result<T, { where: Prisma.Args<T, "update">["where"]; data: { deleted_at: Date } }, "update">> {
