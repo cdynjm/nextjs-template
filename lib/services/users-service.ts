@@ -10,9 +10,7 @@ export class UsersService {
   static async getUsers() {
     const key = await generateKey();
 
-    const usersData = await prisma.user.findMany({
-      where: { deleted_at: null },
-    });
+    const usersData = await prisma.user.findMany();
 
     return await Promise.all(
       usersData.map(async ({ id, ...rest }) => ({
@@ -119,14 +117,7 @@ export class UsersService {
     const userIdString = await decrypt(data.encrypted_id, key);
     const userId = parseInt(userIdString, 10);
 
-    const deleteData = {
-      deleted_at: new Date(),
-    };
-
-    await prisma.user.update({
-      where: { id: userId },
-      data: deleteData,
-    });
+    await prisma.user.softDelete({ id: userId });
 
     return {
       toastDescription: "User has been deleted successfully.",
