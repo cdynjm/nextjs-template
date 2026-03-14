@@ -38,6 +38,7 @@ import { ApiResponse } from "@/types";
 import { query_keys } from "@/lib/queries/query-keys";
 import { Eye, EyeOff, PencilIcon, TrashIcon, UsersIcon } from "lucide-react";
 import axios from "axios";
+import { handleApiError } from "@/lib/exceptions/handle-api-error";
 interface UserForm {
   encrypted_id: string;
   name: string;
@@ -98,17 +99,7 @@ export default function UsersPage() {
       setAddingUser(false);
     },
 
-    onError: (error: unknown) => {
-      if (axios.isAxiosError(error)) {
-        toast("Oops, something went wrong", {
-          description: error.response?.data?.description || error.message,
-        });
-      } else if (error instanceof Error) {
-        toast("Oops, something went wrong", { description: error.message });
-      } else {
-        toast("Oops, something went wrong", { description: "Unknown error" });
-      }
-    },
+    onError: handleApiError,
   });
 
   const [editingUser, setEditingUser] = useState<boolean | null>(null);
@@ -167,17 +158,7 @@ export default function UsersPage() {
       queryClient.invalidateQueries({ queryKey: query_keys.USERS });
       setEditingUser(false);
     },
-    onError: (error: unknown) => {
-      if (axios.isAxiosError(error)) {
-        toast("Oops, something went wrong", {
-          description: error.response?.data?.description || error.message,
-        });
-      } else if (error instanceof Error) {
-        toast("Oops, something went wrong", { description: error.message });
-      } else {
-        toast("Oops, something went wrong", { description: "Unknown error" });
-      }
-    },
+    onError: handleApiError,
   });
 
   const [deletingUser, setDeletingUser] = useState<boolean | null>(null);
@@ -221,17 +202,7 @@ export default function UsersPage() {
       queryClient.invalidateQueries({ queryKey: query_keys.USERS });
       setDeletingUser(false);
     },
-    onError: (error: unknown) => {
-      if (axios.isAxiosError(error)) {
-        toast("Oops, something went wrong", {
-          description: error.response?.data?.description || error.message,
-        });
-      } else if (error instanceof Error) {
-        toast("Oops, something went wrong", { description: error.message });
-      } else {
-        toast("Oops, something went wrong", { description: "Unknown error" });
-      }
-    },
+    onError: handleApiError,
   });
 
   return (

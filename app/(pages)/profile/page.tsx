@@ -27,6 +27,8 @@ import {
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { api } from "@/lib/api/endpoints";
+import { handleApiError } from "@/lib/exceptions/handle-api-error";
+import axios from "axios";
 
 interface ProfileForm {
   encrypted_id: string;
@@ -54,22 +56,17 @@ export default function ProfilePage() {
 
   const updateMutation = useMutation({
     mutationFn: async (data: ProfileForm): Promise<ApiResponse> => {
-      const res = await fetch(api.UPDATE_PROFILE, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${user?.accessToken || ""}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      const resData = await res.json();
-
-      if (!res.ok) {
-        throw resData;
+      if (!user?.accessToken) {
+        throw new Error("User not authenticated");
       }
 
-      return resData;
+      const res = await axios.patch(api.UPDATE_PROFILE, data, {
+        headers: {
+          Authorization: `Bearer ${user.accessToken}`,
+        },
+      });
+
+      return res.data;
     },
 
     onSuccess: (data) => {
@@ -88,22 +85,7 @@ export default function ProfilePage() {
       });
     },
 
-    onError: (error) => {
-      if (error && typeof error === "object" && "description" in error) {
-        const backendError = error as { description: string };
-        toast("Opss sorry but ...", {
-          description: backendError.description,
-          action: {
-            label: "Close",
-            onClick: () => console.log(""),
-          },
-        });
-      } else if (error instanceof Error) {
-        toast.error(error.message);
-      } else {
-        toast.error("Something went wrong");
-      }
-    },
+    onError: handleApiError,
   });
 
   return (
