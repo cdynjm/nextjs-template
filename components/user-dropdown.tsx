@@ -11,7 +11,7 @@ import { signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { NProgressLink, route } from "./ui/nprogress-link";
-import { LogOutIcon, User2Icon } from "lucide-react";
+import { ChevronsUpDown, LogOutIcon, User2Icon } from "lucide-react";
 import { useAuth } from "@/lib/auth/session/client-use-auth";
 
 export function UserDropdown() {
@@ -28,6 +28,7 @@ export function UserDropdown() {
           </Avatar>
 
           <span className="text-sm hidden md:block">{user?.name}</span>
+          <ChevronsUpDown className="ml-auto size-4" />
         </Button>
       </DropdownMenuTrigger>
 
