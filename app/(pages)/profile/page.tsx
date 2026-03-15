@@ -16,14 +16,6 @@ import { ApiResponse } from "@/types";
 import { SkeletonDelay } from "@/components/ui/skeleton-delay";
 import { SkeletonCard } from "@/components/skeleton-card";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { api } from "@/lib/api/endpoints";
