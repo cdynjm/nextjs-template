@@ -16,7 +16,7 @@ export class UsersService {
 
   }
 
-  public static async getUsers() {
+  static async getUsers() {
 
     const { key } = await this.getContext();
     const usersData = await prisma.user.findMany();
@@ -30,7 +30,7 @@ export class UsersService {
 
   }
 
-  public static async createUser(data: User) {
+  static async createUser(data: User) {
 
     if (!data.email || !data.name || !data.password) {
       throw new Error("Email, name, and password are required");
@@ -63,7 +63,7 @@ export class UsersService {
     };
   }
 
-  public static async updateUser(data: User) {
+  static async updateUser(data: User) {
 
     const { key, user } = await this.getContext();
     let updateSession = false as boolean;
@@ -120,7 +120,7 @@ export class UsersService {
     };
   }
 
-  public static async deleteUser(data: User) {
+  static async deleteUser(data: User) {
 
     const { key, user } = await this.getContext();
 
