@@ -7,9 +7,18 @@ import { getAuth } from "../auth/session/server-use-auth";
 import { Prisma } from "@/prisma/generated/prisma/client";
 import { UserUpdateInput } from "@/prisma/generated/prisma/models";
 export class UsersService {
-  static async getUsers() {
-    const key = await generateKey();
 
+  private static async getContext() {
+
+    const key = await generateKey();
+    const { user } = await getAuth();
+    return { key, user };
+
+  }
+
+  public static async getUsers() {
+
+    const { key } = await this.getContext();
     const usersData = await prisma.user.findMany();
 
     return await Promise.all(
@@ -18,9 +27,11 @@ export class UsersService {
         ...rest,
       })),
     );
+
   }
 
-  static async createUser(data: User) {
+  public static async createUser(data: User) {
+
     if (!data.email || !data.name || !data.password) {
       throw new Error("Email, name, and password are required");
     }
@@ -52,15 +63,15 @@ export class UsersService {
     };
   }
 
-  static async updateUser(data: User) {
-    const { user } = await getAuth();
+  public static async updateUser(data: User) {
+
+    const { key, user } = await this.getContext();
     let updateSession = false as boolean;
 
     if (!data.encrypted_id) {
       throw new Error("encrypted_id is required");
     }
 
-    const key = await generateKey();
     const userIdString = await decrypt(data.encrypted_id, key);
     const userId = parseInt(userIdString, 10);
 
@@ -109,14 +120,14 @@ export class UsersService {
     };
   }
 
-  static async deleteUser(data: User) {
-    const { user } = await getAuth();
+  public static async deleteUser(data: User) {
+
+    const { key, user } = await this.getContext();
 
     if (!data.encrypted_id) {
       throw new Error("encrypted_id is required");
     }
-
-    const key = await generateKey();
+    
     const userIdString = await decrypt(data.encrypted_id, key);
     const userId = parseInt(userIdString, 10);
 

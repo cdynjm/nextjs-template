@@ -5,12 +5,22 @@ import { User } from "@/types";
 import { ToastError } from "../exceptions/toast-error";
 import { Prisma } from "@/prisma/generated/prisma/client";
 export class ProfileService {
-  static async updateProfile(data: User) {
+
+  private static async getContext() {
+
+    const key = await generateKey();
+    return { key };
+
+  }
+
+  public static async updateProfile(data: User) {
+
+    const { key } = await this.getContext();
+
     if (!data.encrypted_id) {
       throw new Error("encrypted_id is required");
     }
 
-    const key = await generateKey();
     const userIdString = await decrypt(data.encrypted_id, key);
     const userId = parseInt(userIdString, 10);
 
