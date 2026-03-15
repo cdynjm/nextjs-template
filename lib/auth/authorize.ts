@@ -16,8 +16,8 @@ export async function authorizeUser(
     throw new Error("Too many login attempts. Try again in 5 minutes.");
   }
 
-  const user = await prisma.user.findFirst({
-    where: { email, deleted_at: null },
+  const user = await prisma.user.findUnique({
+    where: { email },
   });
 
   if (!user) throw new Error("Invalid email or password");
