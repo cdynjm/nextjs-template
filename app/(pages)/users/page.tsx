@@ -41,7 +41,7 @@ import axios from "axios";
 import { handleApiError } from "@/lib/exceptions/handle-api-error";
 import Pagination from "@/components/pagination";
 import { Page, Limit } from "@/lib/helpers/pagination";
-
+import Footer from "@/components/footer";
 interface UserForm {
   encrypted_id: string;
   name: string;
@@ -481,6 +481,7 @@ export default function UsersPage() {
               </div>
             </SkeletonDelay>
           </main>
+           <Footer />
         </div>
       </SidebarProvider>
     </SessionGuard>

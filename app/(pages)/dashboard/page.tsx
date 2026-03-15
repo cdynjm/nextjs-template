@@ -17,6 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Footer from "@/components/footer";
 
 export default function DashboardPage() {
   return (
@@ -129,6 +130,7 @@ export default function DashboardPage() {
               </div>
             </SkeletonDelay>
           </main>
+           <Footer />
         </div>
       </SidebarProvider>
     </SessionGuard>

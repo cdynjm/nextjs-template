@@ -29,6 +29,7 @@ import { useState } from "react";
 import { api } from "@/lib/api/endpoints";
 import { handleApiError } from "@/lib/exceptions/handle-api-error";
 import axios from "axios";
+import Footer from "@/components/footer";
 
 interface ProfileForm {
   encrypted_id: string;
@@ -96,20 +97,44 @@ export default function ProfilePage() {
         <div className="flex flex-col w-full min-h-screen">
           <Navbar title="Profile" />
 
-          <main className="p-6 flex justify-center items-start">
+          <main className="p-6">
             <SkeletonDelay skeleton={<SkeletonCard />}>
-              <Card className="w-full max-w-sm">
-                <CardHeader>
-                  <CardTitle>Update Your Profile</CardTitle>
-                  <CardDescription>
-                    Change your email or password
-                  </CardDescription>
-                </CardHeader>
+              <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-8">
+                {/* LEFT COLUMN - PROFILE MENU */}
+                <div className="md:col-span-1 border-r pr-6">
+                  <h2 className="text-lg font-semibold mb-4">Settings</h2>
 
-                <CardContent>
+                  <ul className="space-y-2 text-sm">
+                    <li className="font-semibold text-primary border-l-2 border-primary pl-3 py-1">
+                      Profile
+                    </li>
+
+                    <li className="text-gray-500 pl-3 py-1 hover:text-gray-700 cursor-pointer">
+                      Security
+                    </li>
+
+                    <li className="text-gray-500 pl-3 py-1 hover:text-gray-700 cursor-pointer">
+                      Notifications
+                    </li>
+                  </ul>
+
+                  <div className="mt-8 text-xs text-gray-500">
+                    Manage your personal account information.
+                  </div>
+                </div>
+
+                {/* RIGHT COLUMN - PROFILE FORM */}
+                <div className="md:col-span-2">
+                  <div className="mb-6">
+                    <h1 className="text-xl font-semibold">Profile</h1>
+                    <p className="text-sm text-gray-500">
+                      Update your name, email, or password.
+                    </p>
+                  </div>
+
                   <form
                     onSubmit={handleSubmit(updateProfile)}
-                    className="space-y-5"
+                    className="space-y-6 max-w-md"
                   >
                     <div className="grid gap-2">
                       <Label>Name</Label>
@@ -131,11 +156,12 @@ export default function ProfilePage() {
 
                     <div className="grid gap-2">
                       <Label>Password</Label>
+
                       <div className="relative">
                         <Input
                           type={showPassword ? "text" : "password"}
                           className="pr-10"
-                          {...register("password", { required: false })}
+                          {...register("password")}
                         />
 
                         <Button
@@ -152,18 +178,17 @@ export default function ProfilePage() {
                       </div>
                     </div>
 
-                    <Button
-                      className="w-full"
-                      type="submit"
-                      disabled={updateMutation.isPending}
-                    >
-                      {updateMutation.isPending ? "Updating..." : "Update"}
+                    <Button type="submit" disabled={updateMutation.isPending}>
+                      {updateMutation.isPending
+                        ? "Updating..."
+                        : "Update Profile"}
                     </Button>
                   </form>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </SkeletonDelay>
           </main>
+          <Footer />
         </div>
       </SidebarProvider>
     </SessionGuard>

@@ -7,6 +7,7 @@ import SessionGuard from "@/components/auth/session-guard";
 import { useAuth } from "@/lib/auth/session/client-use-auth";
 import { SkeletonDelay } from "@/components/ui/skeleton-delay";
 import { SkeletonCard } from "@/components/skeleton-card";
+import Footer from "@/components/footer";
 
 export default function Page() {
   const { user } = useAuth();
@@ -23,6 +24,7 @@ export default function Page() {
               {user?.email}
             </SkeletonDelay>
           </main>
+          <Footer />
         </div>
       </SidebarProvider>
     </SessionGuard>
