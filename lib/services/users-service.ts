@@ -24,10 +24,11 @@ export class UsersService {
     return await Promise.all(
       usersData.map(async ({ id, ...rest }) => ({
         encrypted_id: await encrypt(id.toString(), key),
-        ...rest,
-      })),
+        ...Object.fromEntries(
+          Object.entries(rest).filter(([key]) => key !== "password")
+        ),
+      }))
     );
-
   }
 
   static async createUser(data: User) {
