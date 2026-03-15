@@ -34,7 +34,7 @@ export class UsersService {
   static async createUser(data: User) {
 
     if (!data.email || !data.name || !data.password) {
-      throw new Error("Email, name, and password are required");
+      throw new ToastError("Email, name, and password are required");
     }
 
     const emailTrimmed = data.email.trim();
@@ -70,7 +70,7 @@ export class UsersService {
     let updateSession = false as boolean;
 
     if (!data.encrypted_id) {
-      throw new Error("encrypted_id is required");
+      throw new ToastError("encrypted_id is required");
     }
 
     const userIdString = await decrypt(data.encrypted_id, key);
@@ -126,7 +126,7 @@ export class UsersService {
     const { key, user } = await this.getContext();
 
     if (!data.encrypted_id) {
-      throw new Error("encrypted_id is required");
+      throw new ToastError("encrypted_id is required");
     }
     
     const userIdString = await decrypt(data.encrypted_id, key);
