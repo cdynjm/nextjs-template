@@ -37,6 +37,14 @@ const prisma = prismaClient.$extends({
         };
         return query(args);
       },
+
+      async count({ args, query }) {
+        args.where = {
+          ...args.where,
+          deleted_at: null,
+        };
+        return query(args);
+      },
     },
   },
 

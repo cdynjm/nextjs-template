@@ -6,6 +6,7 @@ import { ToastError } from "../exceptions/toast-error";
 import { getAuth } from "../auth/session/server-use-auth";
 import { Prisma } from "@/prisma/generated/prisma/client";
 import { UserUpdateInput } from "@/prisma/generated/prisma/models";
+import { Page, Limit } from "@/lib/helpers/pagination";
 export class UsersService {
 
   private static async getContext() {
@@ -16,19 +17,37 @@ export class UsersService {
 
   }
 
-  static async getUsers() {
-
+  static async getUsers(page = Page, limit = Limit) {
     const { key } = await this.getContext();
-    const usersData = await prisma.user.findMany();
+    const skip = (page - 1) * limit;
+    const [usersData, total] = await Promise.all([
+      prisma.user.findMany({
+        skip,
+        take: limit,
+       
+        orderBy: { created_at: "desc" },
+      }),
+      prisma.user.count(),
+    ]);
 
-    return await Promise.all(
+    const users = await Promise.all(
       usersData.map(async ({ id, ...rest }) => ({
         encrypted_id: await encrypt(id.toString(), key),
         ...Object.fromEntries(
-          Object.entries(rest).filter(([key]) => key !== "password")
+          Object.entries(rest).filter(([k]) => k !== "password")
         ),
       }))
     );
+
+    return {
+      data: users,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   static async createUser(data: User) {

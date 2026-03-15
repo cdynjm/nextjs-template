@@ -39,6 +39,9 @@ import { query_keys } from "@/lib/queries/query-keys";
 import { Eye, EyeOff, PencilIcon, TrashIcon, UsersIcon } from "lucide-react";
 import axios from "axios";
 import { handleApiError } from "@/lib/exceptions/handle-api-error";
+import Pagination from "@/components/pagination";
+import { Page, Limit } from "@/lib/helpers/pagination";
+
 interface UserForm {
   encrypted_id: string;
   name: string;
@@ -50,11 +53,15 @@ export default function UsersPage() {
   const { user, updateSession } = useAuth();
   const queryClient = useQueryClient();
 
-  const { data: users = [], isLoading } = useQuery({
-    queryKey: query_keys.USERS,
+  const [page, setPage] = useState(Page);
+  const limit = Limit;
+
+  const { data, isLoading } = useQuery({
+    queryKey: [query_keys.USERS, page],
     enabled: !!user?.accessToken,
     queryFn: async () => {
       const res = await axios.get(api.GET_USERS, {
+        params: { page, limit },
         headers: {
           Authorization: `Bearer ${user?.accessToken}`,
         },
@@ -62,8 +69,11 @@ export default function UsersPage() {
 
       return res.data;
     },
-    refetchInterval: 10000,
+    placeholderData: (prev) => prev,
   });
+
+  const users = data?.data ?? [];
+  const pagination = data?.pagination;
 
   const [addingUser, setAddingUser] = useState<boolean | null>(null);
 
@@ -95,7 +105,10 @@ export default function UsersPage() {
         action: { label: "Close", onClick: () => {} },
       });
 
-      queryClient.invalidateQueries({ queryKey: query_keys.USERS });
+      queryClient.invalidateQueries({
+        queryKey: [query_keys.USERS],
+        exact: false,
+      });
       setAddingUser(false);
     },
 
@@ -155,7 +168,10 @@ export default function UsersPage() {
         });
       }
 
-      queryClient.invalidateQueries({ queryKey: query_keys.USERS });
+      queryClient.invalidateQueries({
+        queryKey: [query_keys.USERS],
+        exact: false,
+      });
       setEditingUser(false);
     },
     onError: handleApiError,
@@ -199,7 +215,10 @@ export default function UsersPage() {
         action: { label: "Close", onClick: () => {} },
       });
 
-      queryClient.invalidateQueries({ queryKey: query_keys.USERS });
+      queryClient.invalidateQueries({
+        queryKey: [query_keys.USERS],
+        exact: false,
+      });
       setDeletingUser(false);
     },
     onError: handleApiError,
@@ -454,6 +473,11 @@ export default function UsersPage() {
                     )}
                   </TableBody>
                 </Table>
+                <Pagination
+                  page={page}
+                  totalPages={pagination?.totalPages ?? 1}
+                  onPageChange={setPage}
+                />
               </div>
             </SkeletonDelay>
           </main>

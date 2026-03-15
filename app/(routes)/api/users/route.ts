@@ -5,11 +5,14 @@ import { User } from "@/types";
 import { UsersService } from "@/lib/services/users-service";
 import { ToastError } from "@/lib/exceptions/toast-error";
 import { api } from "@/lib/api/endpoints";
+import { Page, Limit } from "@/lib/helpers/pagination";
 
 const app = new Hono();
 
 app.get(api.GET_USERS, middleware, async (c) => {
-  const users = await UsersService.getUsers();
+  const page = Number(c.req.query("page") || Page);
+  const limit = Number(c.req.query("limit") || Limit);
+  const users = await UsersService.getUsers(page, limit);
   return c.json(users);
 });
 
