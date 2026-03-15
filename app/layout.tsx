@@ -5,7 +5,6 @@ import { Providers } from "@/components/providers/session-provider";
 import { NProgressProvider } from "@/components/providers/nprogress-provider";
 import QueryProvider from "@/components/providers/query-provider";
 import { Toaster } from "sonner";
-import { BottomNavbar } from "@/components/bottom-navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
