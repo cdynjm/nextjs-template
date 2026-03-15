@@ -35,7 +35,7 @@ export function UserDropdown() {
       <DropdownMenuContent align="end">
         <DropdownMenuItem>
           <NProgressLink
-            href={route("/profile")}
+            href={route("profile")}
             className="flex items-center gap-2"
           >
             <User2Icon />

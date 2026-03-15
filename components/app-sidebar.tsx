@@ -43,12 +43,12 @@ const menus = [
   {
     name: "Dashboard",
     icon: LayoutDashboard,
-    path: "/dashboard",
+    path: route('dashboard'),
   },
   {
     name: "Users",
     icon: Users2,
-    path: "/users",
+    path: route('users'),
   },
 ];
 
@@ -87,7 +87,7 @@ export function AppSidebar() {
                   >
                     <SidebarMenuButton asChild>
                       <NProgressLink
-                        href={route(item.path)}
+                        href={item.path}
                         className={`flex items-center gap-2 ${isActive ? "font-semibold hover:text-black hover:bg-transparent" : "hover:text-inherit"}`}
                       >
                         <item.icon />
