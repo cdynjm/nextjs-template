@@ -13,7 +13,7 @@ export class ProfileService {
 
   }
 
-  static async updateProfile(data: User) {
+  public static async updateProfile(data: User) {
 
     const { key } = await this.getContext();
 

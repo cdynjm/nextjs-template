@@ -17,7 +17,7 @@ export class UsersService {
 
   }
 
-  static async getUsers(page = Page, limit = Limit) {
+  public static async getUsers(page = Page, limit = Limit) {
     const { key } = await this.getContext();
     const skip = (page - 1) * limit;
     const [usersData, total] = await Promise.all([
@@ -50,7 +50,7 @@ export class UsersService {
     };
   }
 
-  static async createUser(data: User) {
+  public static async createUser(data: User) {
 
     if (!data.email || !data.name || !data.password) {
       throw new ToastError("Email, name, and password are required");
@@ -83,7 +83,7 @@ export class UsersService {
     };
   }
 
-  static async updateUser(data: User) {
+  public static async updateUser(data: User) {
 
     const { key, user } = await this.getContext();
     let updateSession = false as boolean;
@@ -140,7 +140,7 @@ export class UsersService {
     };
   }
 
-  static async deleteUser(data: User) {
+  public static async deleteUser(data: User) {
 
     const { key, user } = await this.getContext();
 
