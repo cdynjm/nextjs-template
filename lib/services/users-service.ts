@@ -25,7 +25,7 @@ export class UsersService {
         skip,
         take: limit,
        
-        orderBy: { created_at: "desc" },
+        orderBy: { updated_at: "desc" },
       }),
       prisma.user.count(),
     ]);
