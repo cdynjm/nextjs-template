@@ -12,7 +12,7 @@ export default function Footer({
   year = new Date().getFullYear(),
 }: FooterProps) {
   return (
-    <footer className={`mb-4 mt-10 ${className}`}>
+    <footer className={`mb-20 md:mb-6 mt-10 ${className}`}>
       {/* Top Grid */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Left Logo */}
@@ -23,6 +23,7 @@ export default function Footer({
             width={250}
             height={250}
             className="mt-2 w-[250px]"
+            loading="eager"
             draggable={false}
           />
         </div>

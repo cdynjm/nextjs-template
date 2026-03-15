@@ -24,6 +24,7 @@ export default function AuthCardLayout({
               alt="Login Illustration"
               width={300}
               height={300}
+              loading="eager"
               className="mb-6 max-h-[300px] object-contain"
               draggable={false}
             />

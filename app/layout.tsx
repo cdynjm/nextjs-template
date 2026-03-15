@@ -5,6 +5,7 @@ import { Providers } from "@/components/providers/session-provider";
 import { NProgressProvider } from "@/components/providers/nprogress-provider";
 import QueryProvider from "@/components/providers/query-provider";
 import { Toaster } from "sonner";
+import { BottomNavbar } from "@/components/bottom-navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,6 +27,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
   return (
     <html lang="en">
       <body
@@ -36,6 +38,7 @@ export default function RootLayout({
             <NProgressProvider />
             <Toaster position="top-right" />
             {children}
+            
           </QueryProvider>
         </Providers>
       </body>
