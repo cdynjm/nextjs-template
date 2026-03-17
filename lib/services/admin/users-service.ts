@@ -2,8 +2,8 @@ import { prisma } from "@/lib/database/prisma";
 import { encrypt, decrypt, generateKey } from "@/lib/crypto/cipher";
 import bcrypt from "bcryptjs";
 import { User } from "@/types";
-import { ToastError } from "../exceptions/toast-error";
-import { getAuth } from "../auth/session/server-use-auth";
+import { ToastError } from "../../exceptions/toast-error";
+import { getAuth } from "../../auth/session/server-use-auth";
 import { Prisma } from "@/prisma/generated/prisma/client";
 import { UserUpdateInput } from "@/prisma/generated/prisma/models";
 import { Page, Limit } from "@/lib/helpers/pagination";
@@ -122,6 +122,13 @@ export class UsersService {
     const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: updateData as Prisma.UserUpdateInput,
+      select: {
+        name: true,
+        email: true,
+        role: true,
+        created_at: true,
+        updated_at: true, 
+      }
     });
 
     if (user?.encrypted_id) {

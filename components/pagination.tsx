@@ -14,7 +14,8 @@ export default function Pagination({
   onPageChange,
   siblings = 1,
 }: Props) {
-  if (totalPages === 0) return null;
+  // If there’s only 1 page, don’t show pagination
+  if (totalPages <= 1) return null;
 
   const pages: (number | string)[] = [];
 

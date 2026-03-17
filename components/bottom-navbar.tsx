@@ -3,16 +3,14 @@
 import { NProgressLink, route } from "./ui/nprogress-link";
 import { LayoutDashboard, UserIcon, Users2 } from "lucide-react";
 import { usePathname } from "next/navigation";
-
-const menus = [
-  { name: "Dashboard", icon: LayoutDashboard, path: route("dashboard") },
-  { name: "Users", icon: Users2, path: route("users") },
-  { name: "Profle", icon: UserIcon, path: route("profile") },
-];
+import { getMenuByRole } from "@/lib/sidebar";
+import { useAuth } from "@/lib/auth/session/client-use-auth";
 
 export function BottomNavbar() {
   const pathname = usePathname();
-
+  const { user } = useAuth();
+  const menus = getMenuByRole(user?.role as undefined);
+  
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t md:hidden">
       <ul className="flex justify-around">

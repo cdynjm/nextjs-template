@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
 import AuthLayout from "./layouts/auth-layout";
-
+import { getSessionAuth } from "@/lib/auth/session/client-use-auth";
 interface LoginForm {
   email: string;
   password: string;
@@ -40,7 +40,10 @@ export default function LoginPage() {
       return;
     }
 
-    router.push("/dashboard");
+    const { user } = await getSessionAuth();
+
+    if(user?.role === "admin")
+      router.push("/admin/dashboard");
   }
 
   return (

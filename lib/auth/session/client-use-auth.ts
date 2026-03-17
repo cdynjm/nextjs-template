@@ -1,4 +1,4 @@
-import { useSession } from "next-auth/react";
+import { useSession, getSession } from "next-auth/react";
 import { Session } from "next-auth";
 
 export function useAuth() {
@@ -11,5 +11,15 @@ export function useAuth() {
     isAuthenticated: status === "authenticated",
     isLoading: status === "loading",
     updateSession: update
+  };
+}
+
+export async function getSessionAuth() {
+  const session = await getSession();
+
+  return {
+    user: session?.user ?? null,
+    isAuthenticated: !!session,
+    isLoading: false,
   };
 }

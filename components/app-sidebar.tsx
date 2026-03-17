@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/sidebar";
 
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users2, Building2, UserIcon } from "lucide-react";
+import { Building2, UserIcon } from "lucide-react";
 import { AppHeader } from "./app-header";
 import { NProgressLink, route } from "./ui/nprogress-link";
 import { ChevronsUpDown, LogOut } from "lucide-react";
@@ -31,31 +31,25 @@ import {
 import { useAuth } from "@/lib/auth/session/client-use-auth";
 import { signOut } from "next-auth/react";
 import { BottomNavbar } from "./bottom-navbar";
-
-const menus = [
-  {
-    name: "Dashboard",
-    icon: LayoutDashboard,
-    path: route("dashboard"),
-  },
-  {
-    name: "Users",
-    icon: Users2,
-    path: route("users"),
-  },
-];
-
-const teams = [
-  {
-    name: "NextJS",
-    logo: Building2,
-    plan: "Project Template",
-  },
-];
+import { getMenuByRole } from "@/lib/sidebar";
 
 export function AppSidebar() {
   const pathname = usePathname();
   const { user } = useAuth();
+
+  const menus = getMenuByRole(user?.role as undefined);
+
+  const teams = [
+    {
+      name: "BudgeTRACK",
+      logo: Building2,
+      plan: "Provincial Budget Office",
+    },
+  ];
+
+  const roleMap: Record<string, string> = {
+    admin: "Admin",
+  };
 
   return (
     <>
@@ -116,7 +110,7 @@ export function AppSidebar() {
                     </Avatar>
                     <div className="grid flex-1 text-left text-sm leading-tight">
                       <span className="truncate font-medium">{user?.name}</span>
-                      <span className="truncate text-xs">{user?.email}</span>
+                      <span className="truncate text-xs uppercase">{user?.role ? roleMap[user.role] : ""}</span>
                     </div>
                     <ChevronsUpDown className="ml-auto size-4" />
                   </SidebarMenuButton>
@@ -137,7 +131,7 @@ export function AppSidebar() {
                         <span className="truncate font-medium">
                           {user?.name}
                         </span>
-                        <span className="truncate text-xs">{user?.email}</span>
+                        <span className="truncate text-xs uppercase">{user?.role ? roleMap[user.role] : ""}</span>
                       </div>
                     </div>
                   </DropdownMenuLabel>
@@ -169,7 +163,7 @@ export function AppSidebar() {
         </SidebarFooter>
         <SidebarRail />
       </Sidebar>
-      
+
       <BottomNavbar />
     </>
   );

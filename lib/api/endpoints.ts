@@ -1,9 +1,9 @@
 export const api = {
 
-  GET_USERS: "/api/users",
-  CREATE_USER: "/api/users",
-  UPDATE_USER: "/api/users",
-  DELETE_USER: "/api/users",
+  GET_USERS: "/api/admin/users",
+  CREATE_USER: "/api/admin/users",
+  UPDATE_USER: "/api/admin/users",
+  DELETE_USER: "/api/admin/users",
 
   UPDATE_PROFILE: "/api/profile",
 

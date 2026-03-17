@@ -11,6 +11,7 @@ export const authCallbacks: Partial<CallbacksOptions> = {
           id: user.id,
           name: user.name,
           email: user.email,
+          role: user.role
         },
         process.env.NEXTAUTH_SECRET!,
         { expiresIn: "12h" }
@@ -21,6 +22,7 @@ export const authCallbacks: Partial<CallbacksOptions> = {
       token.encrypted_id = await encrypt(user.id, key);
       token.email = user.email;
       token.name = user.name;
+      token.role = user.role;
       token.accessToken = accessToken;
     }
 
@@ -37,6 +39,7 @@ export const authCallbacks: Partial<CallbacksOptions> = {
       session.user.encrypted_id = token.encrypted_id as string;
       session.user.name = token.name as string;
       session.user.email = token.email as string;
+      session.user.role = token.role as string;
       session.user.accessToken = token.accessToken as string;
     }
 

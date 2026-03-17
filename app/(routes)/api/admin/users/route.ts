@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { handle } from "hono/vercel";
 import { middleware } from "@/lib/middleware/middleware";
 import { User } from "@/types";
-import { UsersService } from "@/lib/services/users-service";
+import { UsersService } from "@/lib/services/admin/users-service";
 import { ToastError } from "@/lib/exceptions/toast-error";
 import { api } from "@/lib/api/endpoints";
 import { Page, Limit } from "@/lib/helpers/pagination";

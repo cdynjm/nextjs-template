@@ -16,13 +16,13 @@ export default function Footer({
       {/* Top Grid */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Left Logo */}
-        <div className="flex justify-center md:justify-end">
+        <div className="flex justify-center mt-15 md:justify-end">
           <Image
             src="/img/help-desk.png"
             alt="Help Desk"
             width={250}
             height={250}
-            className="mt-2 w-[250px]"
+            className="mt-2 w-[180px] h-[170px]"
             loading="eager"
             draggable={false}
           />

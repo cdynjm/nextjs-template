@@ -20,17 +20,18 @@ export async function authorizeUser(
     where: { email },
   });
 
-  if (!user) throw new Error("Invalid email or password");
+  if (!user) throw new Error("Invalid account credentials");
 
   const valid = await compare(credentials.password, user.password);
 
-  if (!valid) throw new Error("Invalid email or password");
+  if (!valid) throw new Error("Invalid account credentials");
 
   resetRateLimit(email);
 
   return {
     id: user.id.toString(),
-    name: user.name,
+    name: user.name ?? "",
     email: user.email,
+    role: user.role ?? "user", 
   };
 }
