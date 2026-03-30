@@ -9,6 +9,7 @@ export default function FormattedDate({
   endDate,
   variant = "datetime",
 }: FormattedDateProps) {
+  if (!date) return null; // ← null guard
   // Treat string as PH-local time, not UTC
   const parsePHDate = (d: string | Date) => {
     if (typeof d === "string") {

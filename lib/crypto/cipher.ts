@@ -11,16 +11,15 @@ function decode(buffer: ArrayBuffer): string {
 }
 
 export async function generateKey() {
-  const keyBuffer = crypto.createHash("sha256").update(secret as string).digest();
-  return crypto.subtle.importKey(
-    "raw",
-    keyBuffer,
-    "AES-GCM",
-    false,
-    ["decrypt", "encrypt"]
-  );
+  const keyBuffer = crypto
+    .createHash("sha256")
+    .update(secret as string)
+    .digest();
+  return crypto.subtle.importKey("raw", keyBuffer, "AES-GCM", false, [
+    "decrypt",
+    "encrypt",
+  ]);
 }
-
 
 function arrayBufferToBase64(buffer: ArrayBuffer): string {
   return btoa(String.fromCharCode(...new Uint8Array(buffer)));
@@ -35,7 +34,7 @@ function base64ToArrayBuffer(base64: string): ArrayBuffer {
   return bytes.buffer;
 }
 
-export async function encryptToBase64(
+/* export async function encryptToBase64(
   text: string,
   key: CryptoKey
 ): Promise<{ cipher: string; iv: string }> {
@@ -50,12 +49,36 @@ export async function encryptToBase64(
     cipher: arrayBufferToBase64(encrypted),
     iv: arrayBufferToBase64(iv.buffer),
   };
+} */
+
+export async function encryptToBase64(
+  text: string,
+  key: CryptoKey,
+): Promise<{ cipher: string; iv: string }> {
+  // ← derive IV from the text itself instead of random
+  const ivBuffer = crypto
+    .createHash("sha256")
+    .update(text)
+    .digest();
+  const iv = new Uint8Array(ivBuffer);
+
+  const encodedText = encode(text);
+  const encrypted = await crypto.subtle.encrypt(
+    { name: "AES-GCM", iv },
+    key,
+    encodedText as BufferSource,
+  );
+
+  return {
+    cipher: arrayBufferToBase64(encrypted),
+    iv: arrayBufferToBase64(iv.buffer),
+  };
 }
 
 export async function decryptFromBase64(
   cipherBase64: string,
   ivBase64: string,
-  key: CryptoKey
+  key: CryptoKey,
 ): Promise<string> {
   const cipher = base64ToArrayBuffer(cipherBase64);
   const ivBuffer = base64ToArrayBuffer(ivBase64);
@@ -64,7 +87,7 @@ export async function decryptFromBase64(
   const decrypted = await crypto.subtle.decrypt(
     { name: "AES-GCM", iv },
     key,
-    cipher
+    cipher,
   );
 
   return decode(decrypted);

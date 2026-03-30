@@ -1,5 +1,6 @@
 import { database } from "@/lib/helpers/database-name";
 import { Prisma } from "@/prisma/generated/prisma/client";
+import { getPHTodayUTC } from "../helpers/date";
 
 let prismaClient;
 
@@ -29,7 +30,7 @@ const prisma = prismaClient.$extends({
         };
         return query(args);
       },
-      
+
       async findUnique({ args, query }) {
         args.where = {
           ...args.where,
@@ -45,6 +46,40 @@ const prisma = prismaClient.$extends({
         };
         return query(args);
       },
+
+      async create({ args, query }) {
+        args.data = {
+          ...args.data,
+          created_at: getPHTodayUTC(),
+          updated_at: getPHTodayUTC(),
+        };
+        return query(args);
+      },
+
+      async createMany({ args, query }) {
+        args.data = {
+          ...args.data,
+          created_at: getPHTodayUTC(),
+          updated_at: getPHTodayUTC(),
+        };
+        return query(args);
+      },
+
+      async update({ args, query }) {
+        args.data = {
+          ...args.data,
+          updated_at: getPHTodayUTC(),
+        };
+        return query(args);
+      },
+
+      async updateMany({ args, query }) {
+        args.data = {
+          ...args.data,
+          updated_at: getPHTodayUTC(),
+        };
+        return query(args);
+      },
     },
   },
 
@@ -52,27 +87,45 @@ const prisma = prismaClient.$extends({
     $allModels: {
       async delete<T>(
         this: T,
-        where: Prisma.Args<T, "update">["where"]
-      ): Promise<Prisma.Result<T, { where: Prisma.Args<T, "update">["where"]; data: { deleted_at: Date } }, "update">> {
+        where: Prisma.Args<T, "update">["where"],
+      ): Promise<
+        Prisma.Result<
+          T,
+          {
+            where: Prisma.Args<T, "update">["where"];
+            data: { deleted_at: Date };
+          },
+          "update"
+        >
+      > {
         const context = Prisma.getExtensionContext(this);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return (context as any).update({
           where,
           data: {
-            deleted_at: new Date(),
+            deleted_at: getPHTodayUTC(),
           },
         });
       },
       async deleteMany<T>(
         this: T,
-        where: Prisma.Args<T, "update">["where"]
-      ): Promise<Prisma.Result<T, { where: Prisma.Args<T, "update">["where"]; data: { deleted_at: Date } }, "update">> {
+        where: Prisma.Args<T, "updateMany">["where"],
+      ): Promise<
+        Prisma.Result<
+          T,
+          {
+            where: Prisma.Args<T, "updateMany">["where"];
+            data: { deleted_at: Date };
+          },
+          "updateMany"
+        >
+      > {
         const context = Prisma.getExtensionContext(this);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return (context as any).update({
+        return (context as any).updateMany({
           where,
           data: {
-            deleted_at: new Date(),
+            deleted_at: getPHTodayUTC(),
           },
         });
       },
