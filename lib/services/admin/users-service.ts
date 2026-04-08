@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/database/prisma";
-import { encrypt, decrypt, generateKey } from "@/lib/crypto/cipher";
+import { generateKey } from "@/lib/crypto/cipher";
 import bcrypt from "bcryptjs";
 import { User } from "@/types";
 import { ToastError } from "../../exceptions/toast-error";
@@ -8,39 +8,26 @@ import { Prisma } from "@/prisma/generated/prisma/client";
 import { UserUpdateInput } from "@/prisma/generated/prisma/models";
 import { Page, Limit } from "@/lib/helpers/pagination";
 export class UsersService {
-
   private static async getContext() {
-
     const key = await generateKey();
     const { user } = await getAuth();
     return { key, user };
-
   }
 
   public static async getUsers(page = Page, limit = Limit) {
-    const { key } = await this.getContext();
     const skip = (page - 1) * limit;
     const [usersData, total] = await Promise.all([
       prisma.user.findMany({
         skip,
         take: limit,
-       
+
         orderBy: { updated_at: "desc" },
       }),
       prisma.user.count(),
     ]);
 
-    const users = await Promise.all(
-      usersData.map(async ({ id, ...rest }) => ({
-        encrypted_id: await encrypt(id.toString(), key),
-        ...Object.fromEntries(
-          Object.entries(rest).filter(([k]) => k !== "password")
-        ),
-      }))
-    );
-
     return {
-      data: users,
+      data: usersData,
       pagination: {
         total,
         page,
@@ -51,7 +38,6 @@ export class UsersService {
   }
 
   public static async createUser(data: User) {
-
     if (!data.email || !data.name || !data.password) {
       throw new ToastError("Email, name, and password are required");
     }
@@ -84,16 +70,12 @@ export class UsersService {
   }
 
   public static async updateUser(data: User) {
-
-    const { key, user } = await this.getContext();
+    const { user } = await this.getContext();
     let updateSession = false as boolean;
-
-    if (!data.encrypted_id) {
+    
+    if (!data.id) {
       throw new ToastError("encrypted_id is required");
     }
-
-    const userIdString = await decrypt(data.encrypted_id, key);
-    const userId = parseInt(userIdString, 10);
 
     const updateData: Partial<UserUpdateInput> = {};
 
@@ -103,7 +85,7 @@ export class UsersService {
       const existingUser = await prisma.user.findFirst({
         where: {
           email: emailTrimmed,
-          NOT: { id: userId },
+          NOT: { id: data.id },
         },
       });
 
@@ -120,24 +102,19 @@ export class UsersService {
     }
 
     const updatedUser = await prisma.user.update({
-      where: { id: userId },
+      where: { id: data.id },
       data: updateData as Prisma.UserUpdateInput,
       select: {
         name: true,
         email: true,
         role: true,
         created_at: true,
-        updated_at: true, 
-      }
+        updated_at: true,
+      },
     });
 
-    if (user?.encrypted_id) {
-      const authUserIdString = await decrypt(user.encrypted_id, key);
-      const authUserId = parseInt(authUserIdString, 10);
-
-      if (authUserId === userId) {
-        updateSession = true;
-      }
+    if (user?.id === data.id) {
+      updateSession = true;
     }
 
     return {
@@ -148,26 +125,17 @@ export class UsersService {
   }
 
   public static async deleteUser(data: User) {
+    const { user } = await this.getContext();
 
-    const { key, user } = await this.getContext();
-
-    if (!data.encrypted_id) {
+    if (!data.id) {
       throw new ToastError("encrypted_id is required");
     }
-    
-    const userIdString = await decrypt(data.encrypted_id, key);
-    const userId = parseInt(userIdString, 10);
 
-    if (user?.encrypted_id) {
-      const authUserIdString = await decrypt(user.encrypted_id, key);
-      const authUserId = parseInt(authUserIdString, 10);
-
-      if(authUserId === userId) {
-        throw new ToastError("Authenticated user cannot be deleted.");
-      }
+    if (user?.id === data.id) {
+      throw new ToastError("Authenticated user cannot be deleted.");
     }
 
-    await prisma.user.delete({ id: userId });
+    await prisma.user.delete({ id: data.id });
 
     return {
       toastDescription: "User has been deleted successfully.",

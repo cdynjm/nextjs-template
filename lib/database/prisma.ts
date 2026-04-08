@@ -20,7 +20,9 @@ const prisma = prismaClient.$extends({
           ...args.where,
           deleted_at: null,
         };
-        return query(args);
+
+        const result = await query(args);
+        return hidePassword(result);
       },
 
       async findFirst({ args, query }) {
@@ -132,5 +134,17 @@ const prisma = prismaClient.$extends({
     },
   },
 });
+
+function hidePassword(data: object | object[] | null | undefined) {
+  if (!data) return data;
+
+  if (Array.isArray(data)) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    return data.map(({ password: _, ...rest }) => rest);
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { password: _, ...rest } = data as Record<string, unknown>;
+  return rest;
+}
 
 export { prisma };

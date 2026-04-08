@@ -29,7 +29,7 @@ export async function authorizeUser(
   resetRateLimit(email);
 
   return {
-    id: user.id.toString(),
+    id: user.id,
     name: user.name ?? "",
     email: user.email,
     role: user.role ?? "user", 

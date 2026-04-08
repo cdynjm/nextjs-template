@@ -24,7 +24,7 @@ import axios from "axios";
 import Footer from "@/components/footer";
 
 interface ProfileForm {
-  encrypted_id: string;
+  id: string;
   name: string;
   email: string;
   password?: string;
@@ -36,8 +36,8 @@ export default function ProfilePage() {
   const { register, handleSubmit, setValue } = useForm<ProfileForm>();
 
   useEffect(() => {
-    if (user?.email && user?.encrypted_id) {
-      setValue("encrypted_id", user.encrypted_id);
+    if (user?.email && user?.id) {
+      setValue("id", user.id);
       setValue("name", user.name);
       setValue("email", user.email);
     }

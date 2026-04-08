@@ -43,7 +43,7 @@ import Pagination from "@/components/pagination";
 import { Page, Limit } from "@/lib/helpers/pagination";
 import Footer from "@/components/footer";
 interface UserForm {
-  encrypted_id: string;
+  id: string;
   name: string;
   email: string;
   password?: string;
@@ -127,7 +127,7 @@ export default function UsersPage() {
 
   const editUser = (user: User) => {
     updateUserReset({
-      encrypted_id: user.encrypted_id,
+      id: user.id,
       name: user.name,
       email: user.email,
       password: "",
@@ -184,7 +184,7 @@ export default function UsersPage() {
 
   const removeUser = (user: User) => {
     deleteUserReset({
-      encrypted_id: user.encrypted_id,
+      id: user.id,
     });
 
     setDeletingUser(true);

@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/database/prisma";
-import { decrypt, generateKey } from "@/lib/crypto/cipher";
+import { generateKey } from "@/lib/crypto/cipher";
 import bcrypt from "bcryptjs";
 import { User } from "@/types";
 import { ToastError } from "../exceptions/toast-error";
@@ -15,14 +15,9 @@ export class ProfileService {
 
   public static async updateProfile(data: User) {
 
-    const { key } = await this.getContext();
-
-    if (!data.encrypted_id) {
-      throw new Error("encrypted_id is required");
+    if (!data.id) {
+      throw new Error("id is required");
     }
-
-    const userIdString = await decrypt(data.encrypted_id, key);
-    const userId = parseInt(userIdString, 10);
 
     const updateData: Partial<Prisma.UserUpdateInput> = {};
     
@@ -32,7 +27,7 @@ export class ProfileService {
       const existingUser = await prisma.user.findFirst({
         where: {
           email: emailTrimmed,
-          NOT: { id: userId },
+          NOT: { id: data.id },
         },
       });
 
@@ -49,7 +44,7 @@ export class ProfileService {
     }
 
     const updatedUser = await prisma.user.update({
-      where: { id: userId },
+      where: { id: data.id },
       data: updateData as Prisma.UserUpdateInput,
       select: {
         name: true,
