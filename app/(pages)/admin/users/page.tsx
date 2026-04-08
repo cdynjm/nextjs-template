@@ -57,10 +57,10 @@ export default function UsersPage() {
   const limit = Limit;
 
   const { data, isLoading } = useQuery({
-    queryKey: [query_keys.USERS, page],
+    queryKey: [query_keys.users, page],
     enabled: !!user?.accessToken,
     queryFn: async () => {
-      const res = await axios.get(api.GET_USERS, {
+      const res = await axios.get(api.admin.users, {
         params: { page, limit },
         headers: {
           Authorization: `Bearer ${user?.accessToken}`,
@@ -90,7 +90,7 @@ export default function UsersPage() {
         throw new Error("User not authenticated");
       }
 
-      const res = await axios.post(api.CREATE_USER, data, {
+      const res = await axios.post(api.admin.users, data, {
         headers: {
           Authorization: `Bearer ${user.accessToken}`,
         },
@@ -106,7 +106,7 @@ export default function UsersPage() {
       });
 
       queryClient.invalidateQueries({
-        queryKey: [query_keys.USERS],
+        queryKey: [query_keys.users],
         exact: false,
       });
       setAddingUser(false);
@@ -146,7 +146,7 @@ export default function UsersPage() {
         throw new Error("User not authenticated");
       }
 
-      const res = await axios.patch(api.UPDATE_USER, data, {
+      const res = await axios.patch(api.admin.users, data, {
         headers: {
           Authorization: `Bearer ${user.accessToken}`,
         },
@@ -169,7 +169,7 @@ export default function UsersPage() {
       }
 
       queryClient.invalidateQueries({
-        queryKey: [query_keys.USERS],
+        queryKey: [query_keys.users],
         exact: false,
       });
       setEditingUser(false);
@@ -200,7 +200,7 @@ export default function UsersPage() {
         throw new Error("User not authenticated");
       }
 
-      const res = await axios.delete(api.DELETE_USER, {
+      const res = await axios.delete(api.admin.users, {
         data,
         headers: {
           Authorization: `Bearer ${user.accessToken}`,
@@ -216,7 +216,7 @@ export default function UsersPage() {
       });
 
       queryClient.invalidateQueries({
-        queryKey: [query_keys.USERS],
+        queryKey: [query_keys.users],
         exact: false,
       });
       setDeletingUser(false);

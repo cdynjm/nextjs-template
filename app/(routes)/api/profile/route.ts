@@ -8,7 +8,7 @@ import { api } from "@/lib/api/endpoints";
 
 const app = new Hono();
 
-app.patch(api.UPDATE_PROFILE, middleware, async (c) => {
+app.patch(api.profile, middleware, async (c) => {
   try {
     const body = (await c.req.json()) as User;
 

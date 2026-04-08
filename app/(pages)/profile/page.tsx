@@ -53,7 +53,7 @@ export default function ProfilePage() {
         throw new Error("User not authenticated");
       }
 
-      const res = await axios.patch(api.UPDATE_PROFILE, data, {
+      const res = await axios.patch(api.profile, data, {
         headers: {
           Authorization: `Bearer ${user.accessToken}`,
         },

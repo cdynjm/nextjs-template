@@ -9,14 +9,14 @@ import { Page, Limit } from "@/lib/helpers/pagination";
 
 const app = new Hono();
 
-app.get(api.GET_USERS, middleware, async (c) => {
+app.get(api.admin.users, middleware, async (c) => {
   const page = Number(c.req.query("page") || Page);
   const limit = Number(c.req.query("limit") || Limit);
   const users = await UsersService.getUsers(page, limit);
   return c.json(users);
 });
 
-app.post(api.CREATE_USER, middleware, async (c) => {
+app.post(api.admin.users, middleware, async (c) => {
   try {
     const body = (await c.req.json()) as User;
     
@@ -46,7 +46,7 @@ app.post(api.CREATE_USER, middleware, async (c) => {
   }
 });
 
-app.patch(api.UPDATE_USER, middleware, async (c) => {
+app.patch(api.admin.users, middleware, async (c) => {
   try {
     const body = (await c.req.json()) as User;
 
@@ -78,7 +78,7 @@ app.patch(api.UPDATE_USER, middleware, async (c) => {
   }
 });
 
-app.delete(api.DELETE_USER, middleware, async (c) => {
+app.delete(api.admin.users, middleware, async (c) => {
   try {
     const body = (await c.req.json()) as User;
 
