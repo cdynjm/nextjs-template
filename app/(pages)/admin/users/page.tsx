@@ -35,7 +35,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { User } from "@/types";
 import { ApiResponse } from "@/types";
-import { query_keys } from "@/lib/queries/query-keys";
+import { query } from "@/lib/queries/query-keys";
 import { Eye, EyeOff, PencilIcon, TrashIcon, UsersIcon } from "lucide-react";
 import axios from "axios";
 import { handleApiError } from "@/lib/exceptions/handle-api-error";
@@ -57,7 +57,7 @@ export default function UsersPage() {
   const limit = Limit;
 
   const { data, isLoading } = useQuery({
-    queryKey: [query_keys.users, page],
+    queryKey: [query.admin.users, page],
     enabled: !!user?.accessToken,
     queryFn: async () => {
       const res = await axios.get(api.admin.users, {
@@ -106,7 +106,7 @@ export default function UsersPage() {
       });
 
       queryClient.invalidateQueries({
-        queryKey: [query_keys.users],
+        queryKey: [query.admin.users],
         exact: false,
       });
       setAddingUser(false);
@@ -169,7 +169,7 @@ export default function UsersPage() {
       }
 
       queryClient.invalidateQueries({
-        queryKey: [query_keys.users],
+        queryKey: [query.admin.users],
         exact: false,
       });
       setEditingUser(false);
@@ -216,7 +216,7 @@ export default function UsersPage() {
       });
 
       queryClient.invalidateQueries({
-        queryKey: [query_keys.users],
+        queryKey: [query.admin.users],
         exact: false,
       });
       setDeletingUser(false);
@@ -481,7 +481,7 @@ export default function UsersPage() {
               </div>
             </SkeletonDelay>
           </main>
-           <Footer />
+          <Footer />
         </div>
       </SidebarProvider>
     </SessionGuard>
